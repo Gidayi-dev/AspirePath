@@ -5,16 +5,16 @@ import React from "react";
 
 function NavBar() {
     return (
-        <nav className="flex justify-between bg-purple-50 h-14">
+        <nav className="flex justify-between text-gray-500 h-14 bg-red-50">
             <div className="mt-2.5 text-2xl ml-3 font-bold">
                 AspirePath
             </div>
             <div className="flex gap-10 text-2xl mt-2.5">
-        <a href="#" className="hover:text-gray-500">Home</a>
-        <a href="#" className="hover:text-gray-500">Find Jobs</a>
-        <a href="#" className="hover:text-gray-500">About</a>
-        <a href="#" className="hover:text-gray-500">Post Job</a>
-        <a href="#" className="hover:text-gray-500">Messages</a>
+        <a href="#" className="hover:text-purple-300 ease-in-out duration-300">Home</a>
+        <a href="#" className="hover:text-purple-300 ease-in-out duration-300">Find Jobs</a>
+        <a href="#" className="hover:text-purple-300 ease-in-out duration-300">About</a>
+        <a href="#" className="hover:text-purple-300 ease-in-out duration-300">Post Job</a>
+        <a href="#" className="hover:text-purple-300 ease-in-out duration-300">Messages</a>
       </div>
       
       <div className="flex gap-10 text-2xl mt-2.5 mr-3">
