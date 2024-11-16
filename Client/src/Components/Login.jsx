@@ -1,11 +1,14 @@
 // Provides a login form for existing users (job seekers or employers).
 // Handles authentication (e.g., using JWT).
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -16,13 +19,24 @@ function Login() {
       return;
     }
 
-    // Simulate login request (you can replace this with your actual API call)
+    // Simulate login request (replace this with your actual API call)
     console.log("Logging in with:", { email, password });
 
-    // Reset form
+    // Mock user authentication for demonstration
+    if (email === "user@example.com" && password === "password123") {
+      // Store authentication state in localStorage
+      localStorage.setItem("isAuthenticated", "true");
+      setError("");
+
+      // Redirect to Profile page upon successful login
+      navigate("/profile");
+    } else {
+      setError("Invalid email or password");
+    }
+
+    // Reset form fields
     setEmail("");
     setPassword("");
-    setError("");
   };
 
   return (
@@ -39,6 +53,7 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none"
               placeholder="Enter your email"
+              required
             />
           </div>
           <div className="mb-6">
@@ -49,6 +64,7 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none"
               placeholder="Enter your password"
+              required
             />
           </div>
           <button

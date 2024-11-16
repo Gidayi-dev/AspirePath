@@ -1,6 +1,7 @@
 // Handles user registration for job seekers and employers.
 // Collects data like name, email, password, and account type.
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -8,6 +9,8 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -31,6 +34,9 @@ function Register() {
     setPassword("");
     setConfirmPassword("");
     setError("");
+
+    // Redirect to Login page after successful registration
+    navigate("/login");
   };
 
   return (
@@ -47,6 +53,7 @@ function Register() {
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none"
               placeholder="Enter your username"
+              required
             />
           </div>
           <div className="mb-4">
@@ -57,6 +64,7 @@ function Register() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none"
               placeholder="Enter your email"
+              required
             />
           </div>
           <div className="mb-4">
@@ -67,6 +75,7 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none"
               placeholder="Enter your password"
+              required
             />
           </div>
           <div className="mb-6">
@@ -77,6 +86,7 @@ function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none"
               placeholder="Confirm your password"
+              required
             />
           </div>
           <button
