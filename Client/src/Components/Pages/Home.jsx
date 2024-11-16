@@ -6,14 +6,13 @@ import NavBar from "../Navbar";
 import SearchBar from "../SearchBar";
 
 function Home() {
-    return(
-        <div>
-        <NavBar />
-        <SearchBar/>
-        <Filter/>
-        <JobList/>
-        
-        </div>
-    )
+  return (
+    <div>
+      <NavBar />
+      <SearchBar />
+      <Filter />
+      <JobList />
+    </div>
+  );
 }
-export default Home
+export default Home;
