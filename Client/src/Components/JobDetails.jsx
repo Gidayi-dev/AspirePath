@@ -1,56 +1,95 @@
 // Displays the detailed view of a single job when clicked on from the job list.
 // Shows job description, requirements, salary, application button, etc.
-import React from "react";
-import { useParams } from "react-router-dom";
-
-const sampleJobs = [
-  {
-    id: 1,
-    title: "Software Developer",
-    company: "Teach2Give",
-    location: "Remote",
-    type: "Remote",
-    description:
-      "Develop and maintain web applications using JavaScript and React.",
-  },
-  {
-    id: 2,
-    title: "Data Scientist",
-    company: "Metify",
-    location: "New York",
-    type: "On-site",
-    description:
-      "Analyze large datasets to gain insights and drive business decisions.",
-  },
-  {
-    id: 3,
-    title: "Frontend Engineer",
-    company: "Sportserve",
-    location: "San Francisco",
-    type: "Hybrid",
-    description:
-      "Work on frontend web applications using React and TailwindCSS.",
-  },
-];
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 function JobDetails() {
-  const { jobId } = useParams();
-  const job = sampleJobs.find((job) => job.id === parseInt(jobId));
+  const { jobId } = useParams(); // Get the job ID from the URL
+  const [job, setJob] = useState(null); // Store the job details
+  const [loading, setLoading] = useState(true); // Loading state
+  const navigate = useNavigate();
+
+  // Simulate fetching job data (replace with actual API call)
+  useEffect(() => {
+    // Simulate fetching data based on jobId (replace with API call)
+    const fetchJobDetails = async () => {
+      setLoading(true);
+      // Example mock data, replace this with an actual API call
+      const jobData = {
+        id: jobId,
+        title: "Software Engineer",
+        company: "Tech Corp",
+        description:
+          "We are looking for a highly skilled Software Engineer to join our team. You will be responsible for building and maintaining web applications.",
+        requirements:
+          "3+ years of experience in web development, proficient in React, JavaScript, HTML, CSS.",
+        salary: "$90,000 - $120,000 per year",
+      };
+      setJob(jobData);
+      setLoading(false);
+    };
+
+    fetchJobDetails();
+  }, [jobId]);
+
+  // Handle application button click
+  const handleApply = () => {
+    // Redirect to application page or open a modal (optional)
+    alert("You have applied for the job!");
+  };
+
+  // Loading or error handling UI
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-xl">Loading job details...</div>
+      </div>
+    );
+  }
 
   if (!job) {
-    return <p className="text-center text-red-500 mt-10">Job not found</p>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-xl text-red-500">Job not found!</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-10">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
-        <h2 className="text-4xl font-bold mb-4">{job.title}</h2>
-        <p className="text-gray-700 mb-2">Company: {job.company}</p>
-        <p className="text-gray-700 mb-2">Location: {job.location}</p>
-        <p className="text-gray-700 mb-2">Job Type: {job.type}</p>
-        <p className="text-gray-800 mt-6">{job.description}</p>
-        <button className="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+    <div className="container mx-auto p-6">
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-3xl font-bold">{job.title}</h2>
+        <h3 className="text-xl text-gray-600 mb-4">{job.company}</h3>
+
+        <div className="mb-6">
+          <h4 className="text-2xl font-semibold mb-2">Job Description:</h4>
+          <p>{job.description}</p>
+        </div>
+
+        <div className="mb-6">
+          <h4 className="text-2xl font-semibold mb-2">Requirements:</h4>
+          <ul className="list-disc pl-6">
+            <li>{job.requirements}</li>
+          </ul>
+        </div>
+
+        <div className="mb-6">
+          <h4 className="text-2xl font-semibold mb-2">Salary:</h4>
+          <p>{job.salary}</p>
+        </div>
+
+        <button
+          onClick={handleApply}
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+        >
           Apply Now
+        </button>
+
+        <button
+          onClick={() => navigate("/findjobs")}
+          className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mt-4 hover:bg-gray-400"
+        >
+          Back to Job Listings
         </button>
       </div>
     </div>
