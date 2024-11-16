@@ -15,25 +15,25 @@ function NavBar() {
           Home
         </Link>
         <Link
-          to="/jobs"
+          to="/Findjobs"
           className="hover:text-purple-500 ease-in-out duration-300"
         >
           Find Jobs
         </Link>
         <Link
-          to="/about"
+          to="/About"
           className="hover:text-purple-500 ease-in-out duration-300"
         >
           About
         </Link>
         <Link
-          to="/post-job"
+          to="/Postjob"
           className="hover:text-purple-500 ease-in-out duration-300"
         >
           Post Job
         </Link>
         <Link
-          to="/messages"
+          to="/Messages"
           className="hover:text-purple-500 ease-in-out duration-300"
         >
           Messages
@@ -43,13 +43,13 @@ function NavBar() {
       {/* Auth Links */}
       <div className="flex gap-10 text-xl mr-5">
         <Link
-          to="/register"
+          to="/Register"
           className="hover:text-yellow-900 ease-in-out duration-300"
         >
           Register
         </Link>
         <Link
-          to="/login"
+          to="/Login"
           className="hover:text-yellow-900 ease-in-out duration-300"
         >
           Log In
