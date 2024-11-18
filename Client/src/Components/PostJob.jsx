@@ -1,6 +1,3 @@
-// Provides a form for employers to post job listings.
-// Allows users to fill in job details like title, location, salary, description, and job type.
-// Includes functionality to submit the job to the backend.
 import React, { useState } from "react";
 import NavBar from "./Navbar";
 
@@ -9,22 +6,53 @@ function PostJob() {
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(
-      `Job Posted:\nTitle: ${title}\nLocation: ${location}\nType: ${type}\nDescription: ${description}`,
-    );
-    setTitle("");
-    setLocation("");
-    setType("");
-    setDescription("");
+
+    // Start loading state
+    setLoading(true);
+    setError(null);
+
+    const jobData = {
+      title,
+      location,
+      type,
+      description,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jobData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Job posted successfully: ${result.title}`);
+        setTitle("");
+        setLocation("");
+        setType("");
+        setDescription("");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to post job.");
+      }
+    } catch (err) {
+      setError("An error occurred while posting the job.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div>
       <NavBar />
-
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-10">
         <h2 className="text-4xl font-bold text-gray-800 mb-6">Post a Job</h2>
         <form
@@ -59,6 +87,7 @@ function PostJob() {
               value={type}
               onChange={(e) => setType(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+              required
             >
               <option value="">Select Job Type</option>
               <option value="Remote">Remote</option>
@@ -68,9 +97,7 @@ function PostJob() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-700 font-medium">
-              Job Description
-            </label>
+            <label className="block text-gray-700 font-medium">Job Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -83,9 +110,16 @@ function PostJob() {
           <button
             type="submit"
             className="bg-gray-700 text-white px-6 py-2 rounded hover:bg-gray-800"
+            disabled={loading} // Disable button while loading
           >
-            Post Job
+            {loading ? "Posting..." : "Post Job"}
           </button>
+
+          {error && (
+            <div className="text-red-500 mt-4">
+              <p>{error}</p>
+            </div>
+          )}
         </form>
       </div>
     </div>
