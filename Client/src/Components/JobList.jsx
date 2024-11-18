@@ -4,7 +4,7 @@
 import React from "react";
 
 function JobList({ jobs = [] }) {
-  // Check if jobs is an array to prevent errors
+
   const jobList = Array.isArray(jobs) ? jobs : [];
 
   return (

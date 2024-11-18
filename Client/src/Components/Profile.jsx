@@ -3,7 +3,6 @@
 import React from "react";
 
 function Profile() {
-  // Sample user data
   const user = {
     name: "Millyannah Gidayi",
     email: "millyannahi@gmail.com",

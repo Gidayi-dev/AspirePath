@@ -6,10 +6,8 @@ import { Link } from "react-router-dom";
 function NavBar() {
   return (
     <nav className="flex justify-between items-center text-gray-700 h-14 bg-gray-100 shadow-lg">
-      {/* Logo Section */}
       <div className="text-2xl ml-5 font-bold text-gray-800">AspirePath</div>
 
-      {/* Navigation Links */}
       <div className="flex gap-10 text-xl">
         <Link to="/" className="hover:text-purple-500 ease-in-out duration-300">
           Home
@@ -40,7 +38,6 @@ function NavBar() {
         </Link>
       </div>
 
-      {/* Auth Links */}
       <div className="flex gap-10 text-xl mr-5">
         <Link
           to="/Register"

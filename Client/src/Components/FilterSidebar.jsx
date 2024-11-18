@@ -130,7 +130,6 @@ function Filter({ onFilterChange }) {
   const [jobType, setJobType] = useState("");
   const [keyword, setKeyword] = useState("");
 
-  // Generate the list of countries using useMemo for better performance
   const countries = useMemo(() => countryList().getData(), []);
 
   const handleFilterChange = () => {
@@ -142,7 +141,6 @@ function Filter({ onFilterChange }) {
       <div className="w-4/5 p-6 bg-gray-100 shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Filter Jobs</h2>
 
-        {/* Keyword Filter */}
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">
             Search a role
@@ -156,7 +154,6 @@ function Filter({ onFilterChange }) {
           />
         </div>
 
-        {/* Location Filter */}
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">
             Location
@@ -175,7 +172,6 @@ function Filter({ onFilterChange }) {
           </select>
         </div>
 
-        {/* Job Type Filter */}
         <div className="mb-6">
           <label className="block text-gray-700 font-medium mb-2">
             Job Type
@@ -228,7 +224,6 @@ function Filter({ onFilterChange }) {
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-4">
           <button
             onClick={handleFilterChange}

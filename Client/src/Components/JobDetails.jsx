@@ -4,17 +4,16 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 function JobDetails() {
-  const { jobId } = useParams(); // Get the job ID from the URL
-  const [job, setJob] = useState(null); // Store the job details
-  const [loading, setLoading] = useState(true); // Loading state
+  const { jobId } = useParams(); 
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
 
-  // Simulate fetching job data (replace with actual API call)
   useEffect(() => {
-    // Simulate fetching data based on jobId (replace with API call)
+  
     const fetchJobDetails = async () => {
       setLoading(true);
-      // Example mock data, replace this with an actual API call
+  
       const jobData = {
         id: jobId,
         title: "Software Engineer",
@@ -32,13 +31,11 @@ function JobDetails() {
     fetchJobDetails();
   }, [jobId]);
 
-  // Handle application button click
   const handleApply = () => {
-    // Redirect to application page or open a modal (optional)
+    
     alert("You have applied for the job!");
   };
 
-  // Loading or error handling UI
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">

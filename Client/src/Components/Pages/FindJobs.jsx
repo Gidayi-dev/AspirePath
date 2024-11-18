@@ -4,7 +4,6 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "../Navbar";
 
-// Sample job data (simulating API response)
 const sampleJobs = [
   {
     id: 1,
@@ -47,11 +46,10 @@ function FindJobs() {
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
-  const [jobs, setJobs] = useState(sampleJobs); // Set initial jobs (can be fetched from an API)
+  const [jobs, setJobs] = useState(sampleJobs); 
   const [page, setPage] = useState(1);
-  const [jobsPerPage] = useState(3); // Number of jobs per page
+  const [jobsPerPage] = useState(3);
 
-  // Filter jobs based on search criteria
   const filteredJobs = jobs.filter((job) => {
     const matchesKeyword = job.title
       .toLowerCase()
@@ -64,12 +62,10 @@ function FindJobs() {
     return matchesKeyword && matchesLocation && matchesType;
   });
 
-  // Paginate filtered jobs
   const indexOfLastJob = page * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
 
-  // Function to change pages
   const paginate = (pageNumber) => setPage(pageNumber);
 
   return (
@@ -78,7 +74,6 @@ function FindJobs() {
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-10">
         <h2 className="text-4xl font-bold text-gray-800 mb-6">Find Jobs</h2>
 
-        {/* Filters */}
         <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-3xl mb-10">
           <div className="mb-4">
             <label className="block text-gray-700 font-medium mb-2">

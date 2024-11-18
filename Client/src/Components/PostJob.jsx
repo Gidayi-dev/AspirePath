@@ -15,7 +15,6 @@ function PostJob() {
     alert(
       `Job Posted:\nTitle: ${title}\nLocation: ${location}\nType: ${type}\nDescription: ${description}`,
     );
-    // Reset form fields
     setTitle("");
     setLocation("");
     setType("");

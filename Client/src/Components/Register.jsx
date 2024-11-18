@@ -10,12 +10,11 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   const handleRegister = (e) => {
     e.preventDefault();
 
-    // Basic validation
     if (!username || !email || !password || !confirmPassword) {
       setError("Please fill in all fields");
       return;
@@ -25,17 +24,14 @@ function Register() {
       return;
     }
 
-    // Simulate registration request (you can replace this with your actual API call)
     console.log("Registering with:", { username, email, password });
 
-    // Reset form
     setUsername("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
     setError("");
 
-    // Redirect to Login page after successful registration
     navigate("/login");
   };
 

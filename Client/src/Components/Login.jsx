@@ -14,28 +14,23 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Basic validation
     if (!email || !password) {
       setError("Please fill in all fields");
       return;
     }
 
-    // Simulate login request (replace this with your actual API call)
     console.log("Logging in with:", { email, password });
 
-    // Mock user authentication for demonstration
     if (email === "user@example.com" && password === "password123") {
-      // Store authentication state in localStorage
+
       localStorage.setItem("isAuthenticated", "true");
       setError("");
 
-      // Redirect to Profile page upon successful login
       navigate("/profile");
     } else {
       setError("Invalid email or password");
     }
 
-    // Reset form fields
     setEmail("");
     setPassword("");
   };
