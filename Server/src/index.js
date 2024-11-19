@@ -94,6 +94,19 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { registerUser } from "./controllers/users.controllers.js";
+import { LogInUser } from "./controllers/auth.controllers.js";
+import {
+  createJob,
+  fetchSingleJob,
+  fetchAllJobs,
+  getUserJobs,
+  deleteJob,
+  updateJob,
+} from "./controllers/jobs.contollers.js";
+import validateJob from "./middlewares/validateJob.js";
+import validateUserInformation from "./middlewares/validateUserInformation.js";
+import verifyToken from "./middlewares/verifyToken.js";
 
 const app = express();
 
@@ -109,13 +122,13 @@ app.use(
 );
 app.use(cookieParser());
 
-app.post("/users");
-app.post("/auth/Login");
-app.post("/jobs");
-app.get("/jobs/user");
-app.get("/jobs/:id");
-app.get("/jobs");
-app.delete("/jobs/:jobId");
-app.put("/jobs/:jobId");
+app.post("/users", validateUserInformation, registerUser);
+app.post("/auth/Login", LogInUser);
+app.post("/jobs", verifyToken, validateJob, createJob);
+app.get("/jobs/user", verifyToken, getUserJobs);
+app.get("/jobs/:id", verifyToken, fetchSingleJob);
+app.get("/jobs", verifyToken, fetchAllJobs);
+app.delete("/jobs/:jobId", verifyToken, deleteJob);
+app.put("/jobs/:jobId", verifyToken, validateJob, updateJob);
 
 app.listen(4000, () => console.log("Server running...."));
