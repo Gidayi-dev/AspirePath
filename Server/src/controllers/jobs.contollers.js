@@ -24,7 +24,9 @@ export async function createJob(req, res) {
     res.status(201).json(newJob);
   } catch (e) {
     console.error("Error creating a job post:", e);
-    res.status(500).json({ message: "Something went wrong. Please try again later." });
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 }
 
@@ -46,7 +48,9 @@ export async function fetchSingleJob(req, res) {
     res.status(200).json(job);
   } catch (e) {
     console.error("Error fetching single job:", e);
-    res.status(500).json({ message: "Something went wrong. Please try again later." });
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 }
 
@@ -78,7 +82,9 @@ export async function getUserJobs(req, res) {
     res.status(200).json(jobs);
   } catch (e) {
     console.error("Error fetching user jobs:", e);
-    res.status(500).json({ message: "Something went wrong. Please try again later." });
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 }
 
@@ -89,17 +95,16 @@ export async function deleteJob(req, res) {
 
     await prisma.job.delete({
       where: {
-        AND: [
-          { id: jobId },
-          { owner: userId },
-        ],
+        AND: [{ id: jobId }, { owner: userId }],
       },
     });
 
     res.status(200).json({ message: "Job deleted successfully." });
   } catch (e) {
     console.error("Error deleting job:", e);
-    res.status(500).json({ message: "Something went wrong. Please try again later." });
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 }
 
@@ -117,6 +122,8 @@ export async function updateJob(req, res) {
     res.status(200).json(job);
   } catch (e) {
     console.error("Error updating job:", e);
-    res.status(500).json({ message: "Something went wrong. Please try again later." });
+    res
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 }

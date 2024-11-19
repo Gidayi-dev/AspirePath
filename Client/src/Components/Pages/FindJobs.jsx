@@ -46,7 +46,7 @@ function FindJobs() {
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
-  const [jobs, setJobs] = useState(sampleJobs); 
+  const [jobs, setJobs] = useState(sampleJobs);
   const [page, setPage] = useState(1);
   const [jobsPerPage] = useState(3);
 

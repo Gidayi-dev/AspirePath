@@ -50,7 +50,6 @@
 //   }
 // });
 
-
 // // User login route
 // app.post("/login", async (req, res) => {
 //   const { email, password } = req.body;
@@ -103,7 +102,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:5173"], 
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
     credentials: true,
   }),
@@ -111,12 +110,12 @@ app.use(
 app.use(cookieParser());
 
 app.post("/users");
-app.post("/auth/Login")
-app.post("/jobs")
-app.get("/jobs/user")
-app.get("/jobs/:id")
-app.get("/jobs")
-app.delete("/jobs/:jobId")
-app.put("/jobs/:jobId")
+app.post("/auth/Login");
+app.post("/jobs");
+app.get("/jobs/user");
+app.get("/jobs/:id");
+app.get("/jobs");
+app.delete("/jobs/:jobId");
+app.put("/jobs/:jobId");
 
 app.listen(4000, () => console.log("Server running...."));

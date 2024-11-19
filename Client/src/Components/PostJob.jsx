@@ -97,7 +97,9 @@ function PostJob() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-700 font-medium">Job Description</label>
+            <label className="block text-gray-700 font-medium">
+              Job Description
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}

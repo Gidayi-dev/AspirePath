@@ -4,7 +4,6 @@
 import React from "react";
 
 function JobList({ jobs = [] }) {
-
   const jobList = Array.isArray(jobs) ? jobs : [];
 
   return (

@@ -106,7 +106,7 @@ function Login() {
     }
 
     try {
-      const response = await fetch({apiBase}/login, {
+      const response = await fetch({ apiBase } / login, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -4,16 +4,15 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 function JobDetails() {
-  const { jobId } = useParams(); 
+  const { jobId } = useParams();
   const [job, setJob] = useState(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-  
     const fetchJobDetails = async () => {
       setLoading(true);
-  
+
       const jobData = {
         id: jobId,
         title: "Software Engineer",
@@ -32,7 +31,6 @@ function JobDetails() {
   }, [jobId]);
 
   const handleApply = () => {
-    
     alert("You have applied for the job!");
   };
 

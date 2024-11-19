@@ -45,7 +45,6 @@
 //       console.error("Error during registration:", err);
 //       setError("Something went wrong, please try again.")
 //     }
-    
 
 //     console.log("Registering with:", { username, email, password });
 
@@ -195,7 +194,9 @@ function Register() {
         <div className="w-80 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
           {error && <p className="text-red-500 mb-4">{error}</p>}
-          {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
+          {successMessage && (
+            <p className="text-green-500 mb-4">{successMessage}</p>
+          )}
           <form onSubmit={handleRegister}>
             <div className="mb-4">
               <label className="block text-gray-700">Username</label>
