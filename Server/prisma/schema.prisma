@@ -31,9 +31,9 @@ model Job {
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  userId      String
+  owner       String
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [owner], references: [id])
 
   @@map("jobs")
 }
