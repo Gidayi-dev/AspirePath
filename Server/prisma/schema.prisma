@@ -14,26 +14,45 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   username String
-  email    String @unique
+  email    String   @unique
   password String
-  jobs     Job[]
+  role     Role     @default(JOBSEEKER) // EMPLOYER or EMPLOYEE
+  jobs     Job[]    @relation("UserJobs") // Jobs posted by the employer
+  applications Application[] // Jobs applied for by the employee
 
   @@map("users")
 }
 
 model Job {
-  id          String   @id @default(uuid())
+  id          String      @id @default(uuid())
   title       String
   location    String
-  type        String
+  type        String       // e.g., Full-time, Part-time, Contract
   description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  owner       String
-
-  user User @relation(fields: [owner], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  owner       User         @relation("UserJobs", fields: [ownerId], references: [id])
+  ownerId     String
+  applications Application[] // Applications for this job
 
   @@map("jobs")
+}
+
+model Application {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id]) // Employee applying for the job
+  userId    String
+  job       Job      @relation(fields: [jobId], references: [id]) // Job being applied for
+  jobId     String
+
+  @@map("applications")
+}
+
+// Enum for user roles
+enum Role {
+  EMPLOYER
+  JOBSEEKER
 }

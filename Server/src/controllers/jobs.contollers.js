@@ -6,6 +6,11 @@ export async function createJob(req, res) {
   try {
     const { title, location, type, description } = req.body;
     const userId = req.userId;
+    const user = await client.user.findUnique({ where: { id: userId } });
+
+    if (user.role !== "EMPLOYER") {
+      return res.status(403).json({ message: "Only employers can post jobs." });
+    }
 
     if (!title || !location || !type || !description) {
       return res.status(400).json({ message: "All fields are required" });
