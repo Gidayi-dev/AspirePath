@@ -33,32 +33,35 @@ function Profile() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-10">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
-        <h2 className="text-4xl font-bold mb-4">{user.name}</h2>
-        <p className="text-gray-600 mb-4">Email: {user.email}</p>
-        <p className="text-gray-600 mb-4">Phone: {user.phone}</p>
-        <p className="text-gray-600 mb-6">Location: {user.location}</p>
-        <p className="text-gray-800 mb-6">{user.bio}</p>
+    <div>
+      <NavBar />
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-10">
+        <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
+          <h2 className="text-4xl font-bold mb-4">{user.name}</h2>
+          <p className="text-gray-600 mb-4">Email: {user.email}</p>
+          <p className="text-gray-600 mb-4">Phone: {user.phone}</p>
+          <p className="text-gray-600 mb-6">Location: {user.location}</p>
+          <p className="text-gray-800 mb-6">{user.bio}</p>
 
-        <h3 className="text-2xl font-semibold mb-4">Skills</h3>
-        <ul className="mb-6">
-          {user.skills.map((skill, index) => (
-            <li key={index} className="text-gray-700">
-              - {skill}
-            </li>
-          ))}
-        </ul>
+          <h3 className="text-2xl font-semibold mb-4">Skills</h3>
+          <ul className="mb-6">
+            {user.skills.map((skill, index) => (
+              <li key={index} className="text-gray-700">
+                - {skill}
+              </li>
+            ))}
+          </ul>
 
-        <h3 className="text-2xl font-semibold mb-4">Experience</h3>
-        <ul>
-          {user.experience.map((exp, index) => (
-            <li key={index} className="mb-3">
-              <span className="font-bold">{exp.role}</span> at {exp.company} -{" "}
-              {exp.duration}
-            </li>
-          ))}
-        </ul>
+          <h3 className="text-2xl font-semibold mb-4">Experience</h3>
+          <ul>
+            {user.experience.map((exp, index) => (
+              <li key={index} className="mb-3">
+                <span className="font-bold">{exp.role}</span> at {exp.company} -{" "}
+                {exp.duration}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

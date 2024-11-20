@@ -85,11 +85,11 @@
 // }
 
 // export default Login;
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "react-query";
-import apiBase from "../utils/api";
-import NavBar from "./Navbar";
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { useMutation } from "react-query";
+// import apiBase from "../utils/api";
+// import NavBar from "./Navbar";
 
 // function Login() {
 //   const [email, setEmail] = useState("");
@@ -158,52 +158,50 @@ import NavBar from "./Navbar";
 // setEmail("");
 // setPassword("");
 // };
-const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [errorMessage, setErrorMessage] = useState("");
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import NavBar from "./Navbar";
+
+function Login({ setIsAuthenticated }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   const navigate = useNavigate();
 
-  const { mutate, isLoading } = useMutation({
-    mutationFn: async (userObj) => {
-      const response = await fetch(`${apiBase}/auth/Login`, {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:4000/auth/login", {
         method: "POST",
-        body: JSON.stringify(userObj),
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
-        body: JSON.stringify(userObj),
+        body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login Failed");
-      }
-      return response.json();
-    },
-    onSuccess: (data) => {
-      console.log("Login Successfully:", data);
-      navigate("/Profile");
-    },
-    onError: (err) => {
-      setErrorMessage(err.message || "Something went wrong. Please try again.");
-    },
-  });
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-  const handleLogin = (e) => {
-    e.preventDefault();
+      const data = await response.json();
 
-    if (!formData.email || !formData.password) {
-      setErrorMessage("Please fill in all fields");
-      return;
+      if (response.ok) {
+        setSuccessMessage("Login successful! Redirecting to profile...");
+        setIsAuthenticated(true); // Set user as authenticated
+        setTimeout(() => {
+          navigate("/Profile"); // Navigate to profile after successful login
+        }, 2000);
+      } else {
+        setError(data.message || "Invalid email or password");
+      }
+    } catch (err) {
+      console.error("Error during login:", err);
+      setError("Something went wrong, please try again.");
     }
-    loginMutation.mutate(formData);
   };
 
   return (
@@ -213,13 +211,16 @@ const Login = () => {
         <div className="w-80 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
           {error && <p className="text-red-500 mb-4">{error}</p>}
+          {successMessage && (
+            <p className="text-green-500 mb-4">{successMessage}</p>
+          )}
           <form onSubmit={handleLogin}>
             <div className="mb-4">
               <label className="block text-gray-700">Email</label>
               <input
                 type="email"
                 value={email}
-                onChange={handleInputChange}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none"
                 placeholder="Enter your email"
                 required
@@ -230,7 +231,7 @@ const Login = () => {
               <input
                 type="password"
                 value={password}
-                onChange={handleInputChange}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none"
                 placeholder="Enter your password"
                 required
@@ -239,9 +240,8 @@ const Login = () => {
             <button
               type="submit"
               className="w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800"
-              disabled={loginMutation.isLoading}
             >
-              {loginMutation.isLoading ? "Logging in..." : "Login"}
+              Login
             </button>
           </form>
           <p className="mt-4 text-gray-500 text-center">
@@ -254,6 +254,6 @@ const Login = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Login;
