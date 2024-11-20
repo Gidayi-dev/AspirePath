@@ -91,72 +91,119 @@ import { useMutation } from "react-query";
 import apiBase from "../utils/api";
 import NavBar from "./Navbar";
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+// function Login() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [error, setError] = useState("");
 
+//   const navigate = useNavigate();
+
+//   const loginMutation = useMutation(
+//     async (loginData) => {
+//       const response = await fetch(`${apiBase}/auth/Login`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         credentials: "include",
+//         body: JSON.stringify(loginData),
+//       });
+//       if (!response.ok) {
+//         throw new Error("Invalid email or password");
+//       }
+//       return response.json();
+//     },
+//     {
+//       onSuccess: (data) => {
+//         console.log("Login successful:", data);
+//         navigate("/Profile");
+//       },
+//       onError: (err) => {
+//         setError(err.message || "Something went wrong. Please try again.");
+//       },
+//     }
+//   );
+
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+
+//     if (!email || !password) {
+//       setError("Please fill in all fields");
+//       return;
+//     }
+
+//     loginMutation.mutate({ email, password })
+
+// try {
+//   const response = await fetch({ apiBase }/Login, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     credentials: "include",
+//     body: JSON.stringify({ email, password }),
+//   });
+
+//   if (response.ok) {
+//     const data = await response.json();
+//     console.log("Login successful:", data);
+//     setError("");
+//     navigate("/Profile");
+//     setError("Invalid email or password");
+//   }
+// } catch (err) {
+//   setError("Something went wrong. Please try again.");
+// }
+
+// setEmail("");
+// setPassword("");
+// };
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const loginMutation = useMutation(
-    async (loginData) => {
-      const response = await fetch(`${apiBase}/Login`, {
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async (userObj) => {
+      const response = await fetch(`${apiBase}/auth/Login`, {
         method: "POST",
+        body: JSON.stringify(userObj),
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(loginData),
+        body: JSON.stringify(userObj),
       });
+
       if (!response.ok) {
-        throw new Error("Invalid email or password");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login Failed");
       }
       return response.json();
     },
-    {
-      onSuccess: (data) => {
-        console.log("Login successful:", data);
-        navigate("/Profile");
-      },
-      onError: (err) => {
-        setError(err.message || "Something went wrong. Please try again.");
-      },
-    }
-  );
-
-  const handleLogin = async (e) => {
+    onSuccess: (data) => {
+      console.log("Login Successfully:", data);
+      navigate("/Profile");
+    },
+    onError: (err) => {
+      setErrorMessage(err.message || "Something went wrong. Please try again.");
+    },
+  });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  const handleLogin = (e) => {
     e.preventDefault();
 
-    if (!email || !password) {
-      setError("Please fill in all fields");
+    if (!formData.email || !formData.password) {
+      setErrorMessage("Please fill in all fields");
       return;
     }
-
-    loginMutation.mutate({ email, password })
-
-    // try {
-    //   const response = await fetch({ apiBase }/Login, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     credentials: "include",
-    //     body: JSON.stringify({ email, password }),
-    //   });
-
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     console.log("Login successful:", data);
-    //     setError("");
-    //     navigate("/Profile");
-    //     setError("Invalid email or password");
-    //   }
-    // } catch (err) {
-    //   setError("Something went wrong. Please try again.");
-    // }
-
-    // setEmail("");
-    // setPassword("");
+    loginMutation.mutate(formData);
   };
 
   return (
@@ -172,7 +219,7 @@ function Login() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleInputChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none"
                 placeholder="Enter your email"
                 required
@@ -183,7 +230,7 @@ function Login() {
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleInputChange}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none"
                 placeholder="Enter your password"
                 required
@@ -192,8 +239,9 @@ function Login() {
             <button
               type="submit"
               className="w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800"
+              disabled={loginMutation.isLoading}
             >
-              Login
+              {loginMutation.isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
           <p className="mt-4 text-gray-500 text-center">
@@ -206,6 +254,6 @@ function Login() {
       </div>
     </div>
   );
-}
+};
 
 export default Login;
