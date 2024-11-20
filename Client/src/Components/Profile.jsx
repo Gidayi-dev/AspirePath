@@ -1,6 +1,7 @@
 // Displays the user profile for job seekers or employers.
 // Shows user information and possibly saved jobs, applications, or posted jobs.
 import React from "react";
+import NavBar from "./Navbar";
 
 function Profile() {
   const user = {
