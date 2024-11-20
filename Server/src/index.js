@@ -107,6 +107,7 @@ import {
 import validateJob from "./middlewares/validateJob.js";
 import validateUserInformation from "./middlewares/validateUserInformation.js";
 import verifyToken from "./middlewares/verifyToken.js";
+import { getUserProfile } from "./controllers/users.controllers.js";
 
 const app = express();
 
@@ -124,6 +125,9 @@ app.use(cookieParser());
 
 app.post("/users", validateUserInformation, registerUser);
 app.post("/auth/Login", LogInUser);
+// Assuming you're using Express.js and Prisma
+app.get("/users/:id, verifyToken, getUserProfile");
+
 app.post("/jobs", verifyToken, validateJob, createJob);
 app.get("/jobs/user", verifyToken, getUserJobs);
 app.get("/jobs/:id", verifyToken, fetchSingleJob);

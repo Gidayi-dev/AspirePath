@@ -1,235 +1,82 @@
-import React, { useState } from "react";
-import NavBar from "./Navbar";
+import React, { useEffect, useState } from "react";
 
 function Profile() {
-  // Initial user data
-  const [user, setUser] = useState({
-    name: "Millyannah Gidayi",
-    email: "millyannahi@gmail.com",
-    phone: "+254745691986",
-    location: "Nairobi, Kenya",
-    bio: "Aspiring software developer with a passion for full-stack development and machine learning.",
-    skills: [
-      "JavaScript",
-      "React",
-      "Python",
-      "Docker",
-      "Golang",
-      "HTML",
-      "CSS",
-    ],
-    experience: [
-      {
-        role: "Software Developer",
-        company: "Teach2Give",
-        duration: "Sep 2024 - Nov 2024",
-      },
-      {
-        role: "Frontend Developer",
-        company: "Metify",
-        duration: "Jan 2024 - Mar 2024",
-      },
-    ],
-  });
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(""); // Store role
+  const [jobs, setJobs] = useState([]); // Jobs for employers
+  const [applications, setApplications] = useState([]); // Applications for job seekers
+  const [loading, setLoading] = useState(true);
 
-  // State to manage edit mode
-  const [isEditing, setIsEditing] = useState(false);
+  useEffect(() => {
+    // Fetch user profile from the backend
+    axios
+      .get("/profile")
+      .then((response) => {
+        setUser(response.data.user);
+        setRole(response.data.user.role);
+        if (response.data.user.role === "EMPLOYER") {
+          setJobs(response.data.jobsPosted);
+        } else {
+          setApplications(response.data.applications);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching profile:", error);
+        setLoading(false);
+      });
+  }, []);
 
-  // State for editing the user's information
-  const [editedUser, setEditedUser] = useState({ ...user });
-
-  // Handle change in the input fields
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEditedUser({ ...editedUser, [name]: value });
-  };
-
-  // Handle form submission (simulating updating user data)
-  const handleSave = () => {
-    setUser({ ...editedUser });
-    setIsEditing(false);
-  };
-
-  // Handle cancel (reset to original data)
-  const handleCancel = () => {
-    setEditedUser({ ...user });
-    setIsEditing(false);
-  };
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <NavBar />
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-10">
-        <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
-          <h2 className="text-4xl font-bold mb-4">
-            {isEditing ? (
-              <input
-                type="text"
-                name="name"
-                value={editedUser.name}
-                onChange={handleChange}
-                className="text-4xl font-bold mb-4 w-full border-b border-gray-300 focus:outline-none"
-              />
+    <div className="profile-container">
+      <h1>Profile</h1>
+      <div className="profile-details">
+        <p>Username: {user.username}</p>
+        <p>Email: {user.email}</p>
+
+        {/* Employer-Specific Section */}
+        {role === "EMPLOYER" && (
+          <div>
+            <h2>Company Details</h2>
+            <p>Company Name: {user.companyName}</p>{" "}
+            {/* Assume `companyName` is part of the User model */}
+            <p>Company Description: {user.companyDescription}</p>{" "}
+            {/* Assume `companyDescription` */}
+            <h3>Posted Jobs</h3>
+            {jobs.length === 0 ? (
+              <p>No jobs posted yet.</p>
             ) : (
-              user.name
-            )}
-          </h2>
-
-          <p className="text-gray-600 mb-4">
-            Email:{" "}
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={editedUser.email}
-                onChange={handleChange}
-                className="w-full border-b border-gray-300 focus:outline-none"
-              />
-            ) : (
-              user.email
-            )}
-          </p>
-
-          <p className="text-gray-600 mb-4">
-            Phone:{" "}
-            {isEditing ? (
-              <input
-                type="text"
-                name="phone"
-                value={editedUser.phone}
-                onChange={handleChange}
-                className="w-full border-b border-gray-300 focus:outline-none"
-              />
-            ) : (
-              user.phone
-            )}
-          </p>
-
-          <p className="text-gray-600 mb-6">
-            Location:{" "}
-            {isEditing ? (
-              <input
-                type="text"
-                name="location"
-                value={editedUser.location}
-                onChange={handleChange}
-                className="w-full border-b border-gray-300 focus:outline-none"
-              />
-            ) : (
-              user.location
-            )}
-          </p>
-
-          <p className="text-gray-800 mb-6">
-            {isEditing ? (
-              <textarea
-                name="bio"
-                value={editedUser.bio}
-                onChange={handleChange}
-                className="w-full h-24 border-b border-gray-300 focus:outline-none"
-              />
-            ) : (
-              user.bio
-            )}
-          </p>
-
-          <h3 className="text-2xl font-semibold mb-4">Skills</h3>
-          <ul className="mb-6">
-            {user.skills.map((skill, index) => (
-              <li key={index} className="text-gray-700">
-                -{" "}
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="skills"
-                    value={editedUser.skills[index]}
-                    onChange={(e) => {
-                      const updatedSkills = [...editedUser.skills];
-                      updatedSkills[index] = e.target.value;
-                      setEditedUser({ ...editedUser, skills: updatedSkills });
-                    }}
-                    className="w-full border-b border-gray-300 focus:outline-none"
-                  />
-                ) : (
-                  skill
-                )}
-              </li>
-            ))}
-          </ul>
-
-          <h3 className="text-2xl font-semibold mb-4">Experience</h3>
-          <ul>
-            {user.experience.map((exp, index) => (
-              <li key={index} className="mb-3">
-                <span className="font-bold">
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      name="role"
-                      value={editedUser.experience[index]?.role}
-                      onChange={(e) => {
-                        const updatedExperience = [...editedUser.experience];
-                        updatedExperience[index].role = e.target.value;
-                        setEditedUser({
-                          ...editedUser,
-                          experience: updatedExperience,
-                        });
-                      }}
-                      className="w-full border-b border-gray-300 focus:outline-none"
-                    />
-                  ) : (
-                    exp.role
-                  )}
-                </span>{" "}
-                at{" "}
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="company"
-                    value={editedUser.experience[index]?.company}
-                    onChange={(e) => {
-                      const updatedExperience = [...editedUser.experience];
-                      updatedExperience[index].company = e.target.value;
-                      setEditedUser({
-                        ...editedUser,
-                        experience: updatedExperience,
-                      });
-                    }}
-                    className="w-full border-b border-gray-300 focus:outline-none"
-                  />
-                ) : (
-                  exp.company
-                )}
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex justify-between mt-4">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={handleSave}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                  Save
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="bg-gray-500 text-white px-4 py-2 rounded"
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-yellow-500 text-white px-4 py-2 rounded"
-              >
-                Edit Profile
-              </button>
+              jobs.map((job) => (
+                <div key={job.id}>
+                  <h4>{job.title}</h4>
+                  <p>{job.description}</p>
+                  <button>Edit Job</button>
+                  <button>Remove Job</button>
+                </div>
+              ))
             )}
           </div>
-        </div>
+        )}
+
+        {/* Job Seeker-Specific Section */}
+        {role === "JOBSEEKER" && (
+          <div>
+            <h2>Your Applications</h2>
+            {applications.length === 0 ? (
+              <p>You have not applied for any jobs yet.</p>
+            ) : (
+              applications.map((application) => (
+                <div key={application.id}>
+                  <p>Job Title: {application.job.title}</p>
+                  <p>Status: {application.status}</p>{" "}
+                  {/* You can track application status */}
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

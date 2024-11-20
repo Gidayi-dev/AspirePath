@@ -14,27 +14,29 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  username String
-  email    String   @unique
-  password String
-  role     Role     @default(JOBSEEKER) // EMPLOYER or EMPLOYEE
-  jobs     Job[]    @relation("UserJobs") // Jobs posted by the employer
-  applications Application[] // Jobs applied for by the employee
+  id                 String        @id @default(uuid())
+  username           String
+  email              String        @unique
+  password           String
+  role               Role          @default(JOBSEEKER)
+  companyName        String? // Optional field for employer's company name
+  companyDescription String?
+  jobs               Job[]         @relation("UserJobs") // Jobs posted by the employer
+  applications       Application[] // Jobs applied for by the employee
 
   @@map("users")
 }
 
 model Job {
-  id          String      @id @default(uuid())
-  title       String
-  location    String
-  type        String       // e.g., Full-time, Part-time, Contract
-  description String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  owner       User         @relation("UserJobs", fields: [ownerId], references: [id])
-  ownerId     String
+  id           String        @id @default(uuid())
+  title        String
+  location     String
+  type         String // e.g., Full-time, Part-time, Contract
+  description  String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  owner        User          @relation("UserJobs", fields: [ownerId], references: [id])
+  ownerId      String
   applications Application[] // Applications for this job
 
   @@map("jobs")
