@@ -87,6 +87,7 @@
 // export default Login;
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
 import apiBase from "../utils/api";
 import NavBar from "./Navbar";
 
@@ -97,6 +98,32 @@ function Login() {
 
   const navigate = useNavigate();
 
+  const loginMutation = useMutation(
+    async (loginData) => {
+      const response = await fetch(`${apiBase}/Login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(loginData),
+      });
+      if (!response.ok) {
+        throw new Error("Invalid email or password");
+      }
+      return response.json();
+    },
+    {
+      onSuccess: (data) => {
+        console.log("Login successful:", data);
+        navigate("/Profile");
+      },
+      onError: (err) => {
+        setError(err.message || "Something went wrong. Please try again.");
+      },
+    }
+  );
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -105,29 +132,31 @@ function Login() {
       return;
     }
 
-    try {
-      const response = await fetch({ apiBase } / login, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
-      });
+    loginMutation.mutate({ email, password })
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login successful:", data);
-        setError("");
-        navigate("/Profile");
-        setError("Invalid email or password");
-      }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    }
+    // try {
+    //   const response = await fetch({ apiBase }/Login, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     credentials: "include",
+    //     body: JSON.stringify({ email, password }),
+    //   });
 
-    setEmail("");
-    setPassword("");
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     console.log("Login successful:", data);
+    //     setError("");
+    //     navigate("/Profile");
+    //     setError("Invalid email or password");
+    //   }
+    // } catch (err) {
+    //   setError("Something went wrong. Please try again.");
+    // }
+
+    // setEmail("");
+    // setPassword("");
   };
 
   return (

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-const client = newPrismaClient();
+const client = new PrismaClient();
 
 async function validateUserInformation(req, res, next) {
   const { username, email, password } = req.body;
