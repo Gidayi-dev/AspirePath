@@ -65,8 +65,7 @@ import FindJobs from "./Components/Pages/FindJobs";
 import About from "./Components/Pages/About";
 import Messages from "./Components/Pages/Messages";
 import PostJob from "./Components/PostJob";
-import Profile from "./Components/Profile"; // Ensure this is correctly imported
-
+import Profile from "./Components/Profile";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -77,7 +76,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route
             path="/Login"
-            element={<Login setIsAuthenticated={setIsAuthenticated} />} // Passing setIsAuthenticated as a prop
+            element={<Login setIsAuthenticated={setIsAuthenticated} />}
           />
           <Route path="/Register" element={<Register />} />
           <Route path="/Findjobs" element={<FindJobs />} />
