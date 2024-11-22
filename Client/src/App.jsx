@@ -8,35 +8,51 @@ import {
 import Home from "./Components/Pages/Home";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
-import "./App.css";
 import FindJobs from "./Components/Pages/FindJobs";
 import About from "./Components/Pages/About";
 import Messages from "./Components/Pages/Messages";
 import PostJob from "./Components/PostJob";
-import Profile from "./Components/Profile";
+import JobSeekerProfile from "./Components/Pages/Profiles/Jobseeker";
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [role, setRole] = useState("");
 
   return (
     <Router>
       <div className="App">
+        <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route
             path="/Login"
-            element={<Login setIsAuthenticated={setIsAuthenticated} />}
+            element={<Login setIsAuthenticated={setIsAuthenticated} setRole={setRole} />}
           />
           <Route path="/Register" element={<Register />} />
-          <Route path="/Findjobs" element={<FindJobs />} />
+          <Route path="/FindJobs" element={<FindJobs />} />
           <Route path="/About" element={<About />} />
           <Route path="/Messages" element={<Messages />} />
-          <Route path="/Postjob" element={<PostJob />} />
+          <Route path="/PostJob" element={<PostJob />} />
 
-          {/* Protected Profile Route */}
+          {/* Role-Based Protected Routes */}
           <Route
-            path="/Profile"
+            path="/JobSeekerProfile"
             element={
-              isAuthenticated ? <Profile /> : <Navigate to="/Login" replace />
+              isAuthenticated && role === "JOBSEEKER" ? (
+                <JobSeekerProfile />
+              ) : (
+                <Navigate to="/Login" replace />
+              )
+            }
+          />
+          <Route
+            path="/EmployerProfile"
+            element={
+              isAuthenticated && role === "EMPLOYER" ? (
+                <EmployerProfile />
+              ) : (
+                <Navigate to="/Login" replace />
+              )
             }
           />
         </Routes>

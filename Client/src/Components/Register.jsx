@@ -158,9 +158,8 @@
 // }
 
 // export default Register;
-
-import React, { useState } from "react"; // Ensure 'useState' is imported
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NavBar from "./Navbar";
 
 function Register() {
@@ -168,9 +167,9 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState(""); // New state for role
-  const [companyName, setCompanyName] = useState(""); // New state for company name (for EMPLOYER)
-  const [companyDescription, setCompanyDescription] = useState(""); // New state for company description (for EMPLOYER)
+  const [role, setRole] = useState(""); // Role: Job Seeker or Employer
+  const [companyName, setCompanyName] = useState(""); // Employer-specific field
+  const [companyDescription, setCompanyDescription] = useState(""); // Employer-specific field
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -178,11 +177,9 @@ function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
-    // Reset error message before each submission
     setError("");
 
-    // Validate input fields
+    // Validation checks
     if (!username || !email || !password || !confirmPassword || !role) {
       setError("Please fill in all fields.");
       return;
@@ -191,17 +188,13 @@ function Register() {
       setError("Passwords do not match.");
       return;
     }
-
-    // If role is EMPLOYER, ensure companyName and companyDescription are provided
-    if (role === "EMPLOYER") {
-      if (!companyName || !companyDescription) {
-        setError("Company name and description are required for employers.");
-        return;
-      }
+    if (role === "EMPLOYER" && (!companyName || !companyDescription)) {
+      setError("Company name and description are required for employers.");
+      return;
     }
 
     try {
-      const response = await fetch("http://localhost:4000/users", {
+      const response = await fetch("http://localhost:4000/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -211,8 +204,7 @@ function Register() {
           email,
           password,
           role,
-          companyName: role === "EMPLOYER" ? companyName : null,
-          companyDescription: role === "EMPLOYER" ? companyDescription : null,
+          ...(role === "EMPLOYER" && { companyName, companyDescription }),
         }),
       });
 
@@ -229,15 +221,6 @@ function Register() {
     } catch (err) {
       setError("Something went wrong. Please try again.");
     }
-
-    // Reset form fields after submission
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    setRole(""); // Reset role
-    setCompanyName(""); // Reset company name
-    setCompanyDescription(""); // Reset company description
   };
 
   return (
@@ -247,13 +230,12 @@ function Register() {
         <div className="w-80 p-8 bg-white shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
 
-          {/* Displaying success or error message */}
+          {/* Display error or success message */}
           {error && <p className="text-red-500 mb-4">{error}</p>}
           {successMessage && (
             <p className="text-green-500 mb-4">{successMessage}</p>
           )}
 
-          {/* Registration form */}
           <form onSubmit={handleRegister}>
             <div className="mb-4">
               <label className="block text-gray-700">Username</label>
@@ -288,7 +270,7 @@ function Register() {
                 required
               />
             </div>
-            <div className="mb-6">
+            <div className="mb-4">
               <label className="block text-gray-700">Confirm Password</label>
               <input
                 type="password"
@@ -299,8 +281,6 @@ function Register() {
                 required
               />
             </div>
-
-            {/* Role selection dropdown */}
             <div className="mb-4">
               <label className="block text-gray-700">Select Role</label>
               <select
@@ -315,7 +295,7 @@ function Register() {
               </select>
             </div>
 
-            {/* Employer-specific fields */}
+            {/* Show Employer-specific fields if the role is EMPLOYER */}
             {role === "EMPLOYER" && (
               <>
                 <div className="mb-4">
@@ -329,28 +309,31 @@ function Register() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">
-                    Company Description
-                  </label>
+                  <label className="block text-gray-700">Company Description</label>
                   <textarea
                     value={companyDescription}
                     onChange={(e) => setCompanyDescription(e.target.value)}
                     className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    placeholder="Enter your company description"
-                  />
+                    placeholder="Enter a short description of your company"
+                  ></textarea>
                 </div>
               </>
             )}
 
-            <div className="mt-4">
-              <button
-                type="submit"
-                className="w-full py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-700"
-              >
-                Register
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            >
+              Register
+            </button>
           </form>
+
+          <p className="mt-4 text-gray-500 text-center">
+            Already have an account?{" "}
+            <a href="/login" className="text-blue-600">
+              Login
+            </a>
+          </p>
         </div>
       </div>
     </div>
