@@ -309,7 +309,9 @@ function Register() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Company Description</label>
+                  <label className="block text-gray-700">
+                    Company Description
+                  </label>
                   <textarea
                     value={companyDescription}
                     onChange={(e) => setCompanyDescription(e.target.value)}

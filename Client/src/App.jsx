@@ -26,7 +26,12 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route
             path="/Login"
-            element={<Login setIsAuthenticated={setIsAuthenticated} setRole={setRole} />}
+            element={
+              <Login
+                setIsAuthenticated={setIsAuthenticated}
+                setRole={setRole}
+              />
+            }
           />
           <Route path="/Register" element={<Register />} />
           <Route path="/FindJobs" element={<FindJobs />} />

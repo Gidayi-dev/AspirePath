@@ -42,7 +42,9 @@ function Login() {
           navigate("/profile"); // Redirecting to the profile page or dashboard
         }, 2000);
       } else {
-        setError(data.message || "Login failed. Please check your credentials.");
+        setError(
+          data.message || "Login failed. Please check your credentials.",
+        );
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
