@@ -1,6 +1,6 @@
 // Login.jsx
-
 import React, { useState } from "react";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import NavBar from "./Navbar";
 
@@ -11,9 +11,41 @@ function Login() {
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  // Define mutation for login
+  const loginMutation = useMutation(
+    async (loginData) => {
+      const response = await fetch("http://localhost:4000/auth/Login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed.");
+      }
+
+      return response.json();
+    },
+    {
+      onSuccess: (data) => {
+        setSuccessMessage("Login successful! Redirecting...");
+        setTimeout(() => {
+          navigate("/profile"); // Redirect to profile/dashboard
+        }, 2000);
+      },
+      onError: (err) => {
+        setError(err.message || "Something went wrong. Please try again.");
+      },
+    },
+  );
+
+  const handleLogin = (e) => {
     e.preventDefault();
-    setError(""); // Reset error
+    setError("");
+    setSuccessMessage("");
 
     // Input validation
     if (!email || !password) {
@@ -21,34 +53,8 @@ function Login() {
       return;
     }
 
-    try {
-      const response = await fetch("http://localhost:4000/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccessMessage("Login successful! Redirecting...");
-        // Redirect to the user profile or dashboard
-        setTimeout(() => {
-          navigate("/profile"); // Redirecting to the profile page or dashboard
-        }, 2000);
-      } else {
-        setError(
-          data.message || "Login failed. Please check your credentials.",
-        );
-      }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    }
+    // Trigger mutation with login data
+    loginMutation.mutate({ email, password });
   };
 
   return (
@@ -90,7 +96,7 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+              className="w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-400"
             >
               Login
             </button>
