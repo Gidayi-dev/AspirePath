@@ -18,9 +18,6 @@ model User {
   username           String
   email              String        @unique
   password           String
-  role               Role          @default(JOBSEEKER)
-  companyName        String? // Optional field for employer's company name
-  companyDescription String?
   jobs               Job[]         @relation("UserJobs") // Jobs posted by the employer
   applications       Application[] // Jobs applied for by the employee
 
@@ -31,7 +28,7 @@ model Job {
   id           String        @id @default(uuid())
   title        String
   location     String
-  type         String // e.g., Full-time, Part-time, Contract
+  type         String 
   description  String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -53,8 +50,3 @@ model Application {
   @@map("applications")
 }
 
-// Enum for user roles
-enum Role {
-  EMPLOYER
-  JOBSEEKER
-}

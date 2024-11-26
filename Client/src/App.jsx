@@ -14,6 +14,7 @@ import About from "./Components/Pages/About";
 import Messages from "./Components/Pages/Messages";
 import PostJob from "./Components/PostJob";
 import JobSeekerProfile from "./Components/Pages/Profiles/Jobseeker";
+import Profile from "./Components/Profile";
 
 const client = new QueryClient();
 
@@ -40,6 +41,7 @@ function App() {
             <Route path="/FindJobs" element={<FindJobs />} />
             <Route path="/About" element={<About />} />
             <Route path="/Messages" element={<Messages />} />
+            <Route path="/Profile" element={<Profile />} />
             <Route path="/PostJob" element={<PostJob />} />
 
             {/* Role-Based Protected Routes */}

@@ -94,7 +94,10 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { registerUser } from "./controllers/users.controllers.js";
+import {
+  registerUser,
+  getUserProfile,
+} from "./controllers/users.controllers.js";
 import { LogInUser } from "./controllers/auth.controllers.js";
 import {
   createJob,
@@ -107,27 +110,26 @@ import {
 import validateJob from "./middlewares/validateJob.js";
 import validateUserInformation from "./middlewares/validateUserInformation.js";
 import verifyToken from "./middlewares/verifyToken.js";
-import { getUserProfile } from "./controllers/users.controllers.js";
 
 const app = express();
 
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173"], // Change this to match your frontend URL
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
     credentials: true,
   }),
 );
 app.use(cookieParser());
 
+// User Routes
 app.post("/users", validateUserInformation, registerUser);
 app.post("/auth/Login", LogInUser);
-// Assuming you're using Express.js and Prisma
-app.get("/users/:id, verifyToken, getUserProfile");
+app.get("/users/:id", verifyToken, getUserProfile); // Corrected route definition
 
+// Job Routes
 app.post("/jobs", verifyToken, validateJob, createJob);
 app.get("/jobs/user", verifyToken, getUserJobs);
 app.get("/jobs/:id", verifyToken, fetchSingleJob);

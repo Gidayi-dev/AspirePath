@@ -33,7 +33,7 @@ function Login() {
       onSuccess: (data) => {
         setSuccessMessage("Login successful! Redirecting...");
         setTimeout(() => {
-          navigate("/profile"); // Redirect to profile/dashboard
+          navigate("/Profile"); // Redirect to profile/dashboard
         }, 2000);
       },
       onError: (err) => {
@@ -96,16 +96,17 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-400"
+              className="w-full px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600"
+              disabled={loginMutation.isLoading}
             >
-              Login
+              {loginMutation.isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
 
           {/* Link to the Register page */}
           <p className="mt-4 text-gray-500 text-center">
             Don't have an account?{" "}
-            <a href="/register" className="text-blue-600">
+            <a href="/Register" className="text-blue-600">
               Register
             </a>
           </p>

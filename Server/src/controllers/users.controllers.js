@@ -5,18 +5,12 @@ const client = new PrismaClient();
 
 export const registerUser = async (req, res) => {
   try {
-    const {
-      username,
-      email,
-      password,
-      confirmPassword,
-      role,
-      companyName,
-      companyDescription,
-    } = req.body;
+    console.log("Received data:", req.body); // Add this to check the incoming data
+
+    const { username, email, password, confirmPassword } = req.body;
 
     // Validate input fields
-    if (!username || !email || !password || !confirmPassword || !role) {
+    if (!username || !email || !password || !confirmPassword) {
       return res.status(400).json({ message: "Please fill in all fields." });
     }
 
@@ -24,52 +18,21 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match." });
     }
 
-    // Normalize the role to uppercase to avoid mismatches
-    const normalizedRole = role.toUpperCase();
+    // Hash the password before saving it
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Validate role (only accepting JOBSEEKER or EMPLOYER)
-    if (normalizedRole !== "JOBSEEKER" && normalizedRole !== "EMPLOYER") {
-      return res.status(400).json({ message: "Invalid role specified" });
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 8);
-
-    // Additional validation for EMPLOYER role to include company-related details
-    if (normalizedRole === "EMPLOYER") {
-      if (!companyName || !companyDescription) {
-        return res.status(400).json({
-          message: "Company name and description are required for employers.",
-        });
-      }
-
-      // Create a new employer user with company details
-      const newUser = await client.user.create({
-        data: {
-          username,
-          email,
-          password: hashedPassword,
-          role: normalizedRole,
-          companyName,
-          companyDescription,
-        },
-      });
-
-      return res.status(201).json(newUser);
-    }
-
-    // Create a new job-seeker user
+    // Create the new user
     const newUser = await client.user.create({
       data: {
         username,
         email,
         password: hashedPassword,
-        role: normalizedRole,
       },
     });
 
-    // Return the new user object
-    return res.status(201).json(newUser);
+    // Respond with the new user object (excluding sensitive information like password)
+    const { password: _, ...userResponse } = newUser; // Remove the password from the response
+    return res.status(201).json(userResponse);
   } catch (e) {
     console.error("Error during registration:", e);
     return res.status(500).json({ message: e.message });
@@ -82,7 +45,7 @@ export const getUserProfile = async (req, res) => {
   try {
     // Fetch user data
     const user = await client.user.findUnique({
-      where: { id: Number(userId) },
+      where: { id: userId }, // Ensure the ID is passed as a string or number depending on how your DB stores it
     });
 
     // Check if user exists
@@ -90,25 +53,8 @@ export const getUserProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Return different profile information based on role
-    const profileData = {
-      username: user.username,
-      email: user.email,
-      role: user.role,
-    };
-
-    // Add company-specific data if the user is an employer
-    if (user.role === "EMPLOYER") {
-      profileData.companyName = user.companyName;
-      profileData.companyDescription = user.companyDescription;
-    }
-
-    // Add job-seeker specific data if the user is a job seeker
-    if (user.role === "JOBSEEKER") {
-      profileData.skills = user.skills || []; // Example: Job seeker skills or experience
-      profileData.experience = user.experience || []; // Example: Work experience
-    }
-
+    // Return profile data without sensitive information like password
+    const { password: _, ...profileData } = user; // Exclude password from the response
     res.status(200).json(profileData);
   } catch (err) {
     console.error("Error fetching user profile:", err);
