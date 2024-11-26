@@ -1,9 +1,7 @@
-// Manages the top navigation bar with links to different sections like Home, Find Jobs, Post Job, About, Sign Up, and Login.
-// Ensures easy navigation throughout the website.
 import React from "react";
 import { Link } from "react-router-dom";
 
-function NavBar() {
+function NavBarProfile() {
   return (
     <nav className="flex justify-between items-center text-gray-700 h-14 bg-gray-100 shadow-lg">
       <div className="text-2xl ml-5 font-bold text-gray-800">AspirePath</div>
@@ -30,24 +28,21 @@ function NavBar() {
         >
           Post Job
         </Link>
+        <Link
+          to="/Messages"
+          className="hover:text-purple-500 ease-in-out duration-300"
+        >
+          Messages
+        </Link>
       </div>
 
       <div className="flex gap-10 text-xl mr-5">
-        <Link
-          to="/Register"
-          className="hover:text-yellow-900 ease-in-out duration-300"
-        >
-          Register
-        </Link>
-        <Link
-          to="/Login"
-          className="hover:text-yellow-900 ease-in-out duration-300"
-        >
-          Log In
+        <Link to="/" className="hover:text-yellow-900 ease-in-out duration-300">
+          Log Out
         </Link>
       </div>
     </nav>
   );
 }
 
-export default NavBar;
+export default NavBarProfile;

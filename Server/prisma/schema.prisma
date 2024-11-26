@@ -18,6 +18,11 @@ model User {
   username           String
   email              String        @unique
   password           String
+  bio                String? // Make sure bio is defined here, with `String?` for optional
+  skills             Skill[]
+  resume             String?
+  companyName        String?
+  companyDescription String?
   jobs               Job[]         @relation("UserJobs") // Jobs posted by the employer
   applications       Application[] // Jobs applied for by the employee
 
@@ -28,7 +33,7 @@ model Job {
   id           String        @id @default(uuid())
   title        String
   location     String
-  type         String 
+  type         String
   description  String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -50,3 +55,8 @@ model Application {
   @@map("applications")
 }
 
+model Skill {
+  id    String @id @default(cuid())
+  name  String
+  users User[] // Many-to-many relationship to User
+}

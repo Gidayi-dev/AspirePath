@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import NavBar from "./Navbar";
 import { Link } from "react-router-dom"; // Import Link for navigation
+import NavBarProfile from "./Navbarprofile";
 
 function Profile() {
   const [image, setImage] = useState(null); // Profile image
@@ -78,8 +79,8 @@ function Profile() {
 
   return (
     <div>
-      <NavBar />
-      <div className="profile-container mx-auto max-w-4xl p-6 bg-white shadow-lg rounded-lg">
+      <NavBarProfile />
+      <div className="profile-container mx-auto max-w-4xl p-6 bg-white shadow-lg rounded-lg mt-7">
         <h2 className="text-2xl font-bold text-center mb-6">Edit Profile</h2>
 
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -132,7 +133,7 @@ function Profile() {
             <div className="text-center mt-4">
               <button
                 onClick={() => setSavedProfile(null)} // Toggle to Edit Mode
-                className="bg-blue-500 text-white p-2 rounded"
+                className="bg-gray-500 text-white p-2 rounded"
               >
                 Edit Profile
               </button>
@@ -206,11 +207,11 @@ function Profile() {
                 </button>
               </div>
 
-              <div className="selected-skills mt-2 ">
+              <div className="selected-skills mt-2">
                 {skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="bg-gray-200 p-2 m-1 rounded-full flex items-center width: fit-content"
+                    className="bg-blue-200 p-2 m-1 rounded-full flex items-center"
                   >
                     {skill}
                     <button
