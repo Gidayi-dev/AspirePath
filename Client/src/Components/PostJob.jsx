@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import NavBar from "./Navbar";
+import NavBarProfile from "./Navbarprofile";
 
 function PostJob() {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
+  const [company, setCompany] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -24,7 +25,7 @@ function PostJob() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/jobs", {
+      const response = await fetch("http://localhost:4000/jobs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,6 +38,7 @@ function PostJob() {
         alert(`Job posted successfully: ${result.title}`);
         setTitle("");
         setLocation("");
+        setCompany("");
         setType("");
         setDescription("");
       } else {
@@ -52,7 +54,7 @@ function PostJob() {
 
   return (
     <div>
-      <NavBar />
+      <NavBarProfile />
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-10">
         <h2 className="text-4xl font-bold text-gray-800 mb-6">Post a Job</h2>
         <form
@@ -76,6 +78,17 @@ function PostJob() {
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium">Company</label>
+            <input
+              type="text"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none"
               required
             />

@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export async function createJob(req, res) {
   try {
-    const { title, location, type, description } = req.body;
+    const { title, location, company, type, description } = req.body;
     const userId = req.userId;
     const user = await client.user.findUnique({ where: { id: userId } });
 
@@ -12,7 +12,7 @@ export async function createJob(req, res) {
       return res.status(403).json({ message: "Only employers can post jobs." });
     }
 
-    if (!title || !location || !type || !description) {
+    if (!title || !location || !company || !type || !description) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -20,6 +20,7 @@ export async function createJob(req, res) {
       data: {
         title,
         location,
+        company,
         type,
         description,
         owner: userId,
@@ -116,12 +117,12 @@ export async function deleteJob(req, res) {
 export async function updateJob(req, res) {
   try {
     const { jobId } = req.params;
-    const { title, location, type, description } = req.body;
+    const { title, location, company, type, description } = req.body;
     const userId = req.userId;
 
     const job = await prisma.job.update({
       where: { id: jobId, owner: userId },
-      data: { title, location, type, description },
+      data: { title, location, company, type, description },
     });
 
     res.status(200).json(job);

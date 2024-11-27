@@ -42,7 +42,7 @@ app.post("/auth/Login", LogInUser);
 app.get("/users/:id", verifyToken, getUserProfile); // Corrected route definition
 
 // Job Routes
-app.post("/jobs", verifyToken, validateJob, createJob);
+app.post("/jobs", validateJob, createJob);
 app.get("/jobs/user", verifyToken, getUserJobs);
 app.get("/jobs/:id", verifyToken, fetchSingleJob);
 app.get("/jobs", verifyToken, fetchAllJobs);
