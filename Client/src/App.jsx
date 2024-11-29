@@ -84,7 +84,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { AuthProvider, useAuth } from './authContext/authContext';
+import { AuthProvider, useAuth } from "./authContext/authContext";
 import Home from "./Components/Pages/Home";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
@@ -95,7 +95,7 @@ import PostJob from "./Components/PostJob";
 import JobSeekerProfile from "./Components/Pages/Profiles/Jobseeker";
 import Profile from "./Components/Profile";
 import NavBarProfile from "./Components/Navbarprofile";
-import NavBar from "./Components/NavBar"; // Make sure NavBar is imported
+import NavBar from "./Components/Navbar"; // Make sure NavBar is imported
 
 const client = new QueryClient();
 
@@ -107,7 +107,7 @@ function App() {
       <AuthProvider>
         <Router>
           {/* Conditionally render the NavBar based on authentication */}
-          <NavBarProfile />
+          {/* <NavBarProfile /> */}
 
           <Routes>
             {/* Define routes for different pages */}
