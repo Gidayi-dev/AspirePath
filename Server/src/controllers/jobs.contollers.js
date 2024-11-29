@@ -7,13 +7,8 @@ export async function createJob(req, res) {
     const { title, location, company, type, description } = req.body;
     const userId = req.userId; // Assumes `verifyToken` middleware sets this
 
-    // Check if the user exists
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
 
-    // Create a new job and associate it with the user
     const newJob = await prisma.job.create({
       data: {
         title,
@@ -21,18 +16,14 @@ export async function createJob(req, res) {
         company,
         type,
         description,
-        owner: {
-          connect: { id: userId }, // Assuming owner is a relation to User
-        },
+        owner: userId,
       },
     });
 
     res.status(201).json(newJob);
   } catch (e) {
     console.error("Error creating a job post:", e);
-    res
-      .status(500)
-      .json({ message: "An error occurred while creating the job post" });
+    res.status(500).json({ message: e.message });
   }
 }
 
@@ -43,7 +34,7 @@ export async function fetchSingleJob(req, res) {
     const job = await prisma.job.findFirst({
       where: { id },
       include: {
-        user: true,
+        owner: true,
       },
     });
 
@@ -54,9 +45,7 @@ export async function fetchSingleJob(req, res) {
     res.status(200).json(job);
   } catch (e) {
     console.error("Error fetching single job:", e);
-    res
-      .status(500)
-      .json({ message: "Something went wrong. Please try again later." });
+    res.status(500).json({ message: e.message });
   }
 }
 

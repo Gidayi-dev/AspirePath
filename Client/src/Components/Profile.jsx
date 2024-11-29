@@ -1,11 +1,10 @@
-// import React, { useState } from "react";
-// import NavBar from "./Navbar";
-// import { useAuth } from "../authContext/authContext";
-// import { Link } from "react-router-dom"; // Import Link for navigation
+// import React, { useState, useEffect } from "react";
 // import NavBarProfile from "./Navbarprofile";
+// import { useAuth } from "../authContext/authContext";
+// import { Link, useNavigate } from "react-router-dom"; // Import Link for navigation
 
 // function Profile() {
-//   const { auth } = useAuth();
+//   const { auth } = useAuth(); // Use auth context to check authentication status
 //   const [image, setImage] = useState(null); // Profile image
 //   const [skills, setSkills] = useState([]); // Selected skills
 //   const [newSkill, setNewSkill] = useState(""); // New skill to add
@@ -18,6 +17,14 @@
 //   const [savedProfile, setSavedProfile] = useState(null); // To store and display saved profile data
 //   const [error, setError] = useState(""); // For form errors
 //   const [isEditing, setIsEditing] = useState(false);
+//   const navigate = useNavigate();
+
+//   // Redirect if the user is not authenticated
+//   useEffect(() => {
+//     if (!auth.isAuthenticated) {
+//       navigate("/login"); // Redirect to login page if not authenticated
+//     }
+//   }, [auth, navigate]);
 
 //   // Handle Image Upload
 //   const handleImageUpload = (e) => {
@@ -171,61 +178,10 @@
 //               <textarea
 //                 value={bio}
 //                 onChange={(e) => setBio(e.target.value)}
-//                 placeholder="Tell us about yourself"
 //                 className="w-full p-2 border rounded"
-//               ></textarea>
-//             </div>
-
-//             {/* Skills Selection */}
-//             <div className="skills-section mb-6">
-//               <label className="block text-gray-700">Skills</label>
-//               <select
-//                 onChange={handleSkillSelection}
-//                 className="w-full p-2 border rounded"
-//               >
-//                 <option value="">Select a skill...</option>
-//                 {/* Example skills */}
-//                 <option value="JavaScript">JavaScript</option>
-//                 <option value="React">React</option>
-//                 <option value="Node.js">Node.js</option>
-//                 <option value="Python">Python</option>
-//                 <option value="SQL">SQL</option>
-//               </select>
-
-//               <div className="custom-skill mt-2">
-//                 <input
-//                   type="text"
-//                   value={newSkill}
-//                   onChange={handleCustomSkillChange}
-//                   placeholder="Or type your skill..."
-//                   className="w-full p-2 border rounded"
-//                 />
-//                 <button
-//                   type="button"
-//                   onClick={handleAddCustomSkill}
-//                   className="mt-2 p-2 bg-gray-500 text-white rounded"
-//                 >
-//                   Add Skill
-//                 </button>
-//               </div>
-
-//               <div className="selected-skills mt-2">
-//                 {skills.map((skill, index) => (
-//                   <span
-//                     key={index}
-//                     className="bg-blue-200 p-2 m-1 rounded-full flex items-center"
-//                   >
-//                     {skill}
-//                     <button
-//                       type="button"
-//                       onClick={() => handleRemoveSkill(skill)}
-//                       className="ml-2 text-red-500"
-//                     >
-//                       X
-//                     </button>
-//                   </span>
-//                 ))}
-//               </div>
+//                 placeholder="Enter your bio"
+//                 rows="4"
+//               />
 //             </div>
 
 //             {/* Education */}
@@ -235,25 +191,45 @@
 //                 type="text"
 //                 value={education}
 //                 onChange={(e) => setEducation(e.target.value)}
-//                 placeholder="Enter your education details"
 //                 className="w-full p-2 border rounded"
+//                 placeholder="Enter your education"
 //               />
 //             </div>
 
 //             {/* Work Experience */}
 //             <div className="experience-section mb-6">
 //               <label className="block text-gray-700">Work Experience</label>
-//               <textarea
+//               <input
+//                 type="text"
 //                 value={experience}
 //                 onChange={(e) => setExperience(e.target.value)}
-//                 placeholder="Describe your work experience"
 //                 className="w-full p-2 border rounded"
-//               ></textarea>
+//                 placeholder="Enter your work experience"
+//               />
+//             </div>
+
+//             {/* Skills */}
+//             <div className="skills-section mb-6">
+//               <label className="block text-gray-700">Skills</label>
+//               <input
+//                 type="text"
+//                 value={newSkill}
+//                 onChange={handleCustomSkillChange}
+//                 className="w-full p-2 border rounded"
+//                 placeholder="Add a custom skill"
+//               />
+//               <button
+//                 type="button"
+//                 onClick={handleAddCustomSkill}
+//                 className="mt-2 bg-blue-500 text-white p-2 rounded"
+//               >
+//                 Add Skill
+//               </button>
 //             </div>
 
 //             {/* Resume Upload */}
 //             <div className="resume-upload mb-6">
-//               <label className="block text-gray-700">Resume</label>
+//               <label className="block text-gray-700">Upload Resume</label>
 //               <input
 //                 type="file"
 //                 accept=".pdf,.doc,.docx"
@@ -262,38 +238,14 @@
 //               />
 //             </div>
 
-//             {/* Company Information (Optional for Employers) */}
-//             <div className="company-info mb-6">
-//               <label className="block text-gray-700">
-//                 Company Name (Optional)
-//               </label>
-//               <input
-//                 type="text"
-//                 value={companyName}
-//                 onChange={(e) => setCompanyName(e.target.value)}
-//                 placeholder="Enter your company name"
-//                 className="w-full p-2 border rounded"
-//               />
+//             <div className="text-center mt-4">
+//               <button
+//                 type="submit"
+//                 className="bg-blue-500 text-white p-2 rounded"
+//               >
+//                 Save Profile
+//               </button>
 //             </div>
-
-//             <div className="company-description mb-6">
-//               <label className="block text-gray-700">
-//                 Company Description (Optional)
-//               </label>
-//               <textarea
-//                 value={companyDescription}
-//                 onChange={(e) => setCompanyDescription(e.target.value)}
-//                 placeholder="Describe your company"
-//                 className="w-full p-2 border rounded"
-//               ></textarea>
-//             </div>
-
-//             <button
-//               type="submit"
-//               className="bg-gray-500 text-white p-2 rounded mt-4"
-//             >
-//               Save Profile
-//             </button>
 //           </form>
 //         )}
 //       </div>
@@ -302,11 +254,11 @@
 // }
 
 // export default Profile;
-// Profile.jsx
+
 import React, { useState, useEffect } from "react";
 import NavBarProfile from "./Navbarprofile";
 import { useAuth } from "../authContext/authContext";
-import { Link, useNavigate } from "react-router-dom"; // Import Link for navigation
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 
 function Profile() {
   const { auth } = useAuth(); // Use auth context to check authentication status
@@ -322,6 +274,9 @@ function Profile() {
   const [savedProfile, setSavedProfile] = useState(null); // To store and display saved profile data
   const [error, setError] = useState(""); // For form errors
   const [isEditing, setIsEditing] = useState(false);
+  const [myJobs, setMyJobs] = useState([]); // Jobs posted by the user
+  const [jobError, setJobError] = useState(""); // For job fetch errors
+  const [isJobLoading, setIsJobLoading] = useState(true); // For job loading state
   const navigate = useNavigate();
 
   // Redirect if the user is not authenticated
@@ -330,6 +285,29 @@ function Profile() {
       navigate("/login"); // Redirect to login page if not authenticated
     }
   }, [auth, navigate]);
+
+  // Fetch the jobs posted by the logged-in user
+  useEffect(() => {
+    if (auth?.userId) {
+      fetchMyJobs(auth.userId);
+    }
+  }, [auth]);
+
+  const fetchMyJobs = async (userId) => {
+    try {
+      const response = await fetch(`/api/jobs/user/${userId}`);
+      const data = await response.json();
+      if (data.jobs) {
+        setMyJobs(data.jobs);
+      } else {
+        setJobError("No jobs found.");
+      }
+    } catch (e) {
+      setJobError("Failed to fetch jobs.");
+    } finally {
+      setIsJobLoading(false);
+    }
+  };
 
   // Handle Image Upload
   const handleImageUpload = (e) => {
@@ -552,6 +530,37 @@ function Profile() {
               </button>
             </div>
           </form>
+        )}
+      </div>
+      <div className="my-jobs-section mt-6 mx-auto max-w-4xl p-6 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold text-center mb-6">My Jobs</h2>
+        {isJobLoading ? (
+          <p className="text-center text-gray-500">Loading your jobs...</p>
+        ) : jobError ? (
+          <p className="text-center text-red-500">{jobError}</p>
+        ) : (
+          <div>
+            {myJobs.length === 0 ? (
+              <p className="text-center text-gray-500">No jobs found.</p>
+            ) : (
+              <ul>
+                {myJobs.map((job, index) => (
+                  <li key={index} className="mb-4">
+                    <div className="bg-gray-100 p-4 rounded-lg shadow">
+                      <h3 className="font-semibold">{job.title}</h3>
+                      <p>{job.description}</p>
+                      <Link
+                        to={`/job/${job.id}`}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        View Job Details
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         )}
       </div>
     </div>
