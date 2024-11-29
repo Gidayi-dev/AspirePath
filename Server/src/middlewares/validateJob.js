@@ -1,5 +1,5 @@
 function validateJob(req, res, next) {
-  const { title, location, type, description } = req.body;
+  const { title, location, company, type, description } = req.body;
   if (!title) return res.status(400).json({ message: "Job title is required" });
   if (!location)
     return res.status(400).json({ message: "Job location is required" });

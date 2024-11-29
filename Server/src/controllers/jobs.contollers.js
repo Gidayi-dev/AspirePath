@@ -5,15 +5,12 @@ const prisma = new PrismaClient();
 export async function createJob(req, res) {
   try {
     const { title, location, company, type, description } = req.body;
-    const userId = req.userId;
-    const user = await client.user.findUnique({ where: { id: userId } });
+    const userId = req.userId; // Assumes `verifyToken` middleware sets this
 
-    if (user.role !== "EMPLOYER") {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user || user.role !== "EMPLOYER") {
       return res.status(403).json({ message: "Only employers can post jobs." });
-    }
-
-    if (!title || !location || !company || !type || !description) {
-      return res.status(400).json({ message: "All fields are required" });
     }
 
     const newJob = await prisma.job.create({
@@ -30,9 +27,7 @@ export async function createJob(req, res) {
     res.status(201).json(newJob);
   } catch (e) {
     console.error("Error creating a job post:", e);
-    res
-      .status(500)
-      .json({ message: "Something went wrong. Please try again later." });
+    res.status(500).json({ message: e.message });
   }
 }
 
