@@ -20,6 +20,7 @@ function PostJob() {
     const jobData = {
       title,
       location,
+      company,
       type,
       description,
     };

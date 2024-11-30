@@ -7,7 +7,14 @@ export async function createJob(req, res) {
     const { title, location, company, type, description } = req.body;
     const userId = req.userId; // Assumes `verifyToken` middleware sets this
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    // Ensure the user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     const newJob = await prisma.job.create({
       data: {
@@ -16,7 +23,11 @@ export async function createJob(req, res) {
         company,
         type,
         description,
-        owner: userId,
+        owner: {
+          connect: {
+            id: userId, // Linking the user by userId
+          },
+        },
       },
     });
 
