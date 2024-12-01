@@ -12,10 +12,7 @@ function NavBar() {
         <Link to="/" className="hover:text-purple-500 ease-in-out duration-300">
           Home
         </Link>
-        <Link
-          to="/Findjobs"
-          className="hover:text-purple-500 ease-in-out duration-300"
-        >
+        <Link to="/" className="hover:text-purple-500 ease-in-out duration-300">
           Find Jobs
         </Link>
         <Link
@@ -24,10 +21,7 @@ function NavBar() {
         >
           About
         </Link>
-        <Link
-          to="/Postjob"
-          className="hover:text-purple-500 ease-in-out duration-300"
-        >
+        <Link to="/" className="hover:text-purple-500 ease-in-out duration-300">
           Post Job
         </Link>
       </div>

@@ -1,45 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../Navbar";
 import SearchBar from "../SearchBar";
-
-const sampleJobs = [
-  {
-    id: 1,
-    title: "Software Developer",
-    location: "Remote",
-    company: "Sportserve",
-    type: "Remote",
-    description: "Work with a team of developers on various projects.",
-  },
-  {
-    id: 2,
-    title: "Data Scientist",
-    location: "New York",
-    company: "Sportserve",
-    type: "On-site",
-    description: "Analyze data to provide actionable insights.",
-  },
-  {
-    id: 3,
-    title: "Frontend Developer",
-    location: "Remote",
-    company: "Tech Corp",
-    type: "Remote",
-    description: "Build responsive and user-friendly websites.",
-  },
-  // Add more jobs as needed...
-];
 
 function FindJobs() {
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
-  const [jobs] = useState(sampleJobs);
+  const [jobs, setJobs] = useState([]); // State to store jobs fetched from the backend
   const [page, setPage] = useState(1);
   const [jobsPerPage] = useState(3);
 
   const navigate = useNavigate();
+
+  // Fetch jobs from backend
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch("https://your-backend-api.com/jobs");
+        const data = await response.json();
+        setJobs(data); // Set the fetched jobs to state
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   // Filter jobs based on the search and filter conditions
   const filteredJobs = jobs.filter((job) => {
@@ -61,7 +48,7 @@ function FindJobs() {
   const paginate = (pageNumber) => setPage(pageNumber);
 
   const handleApplyNow = (id) => {
-    navigate(`/jobs/${id}`);
+    navigate(`/JobDetails/${id}`); // Fixed to navigate using the correct id
   };
 
   return (

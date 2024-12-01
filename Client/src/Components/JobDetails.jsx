@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react"; // <-- Add useState and useEffect here
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -12,6 +13,7 @@ function JobDetails() {
   const [email, setEmail] = useState("");
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState(null);
+  const [applicationSubmitted, setApplicationSubmitted] = useState(false); // New state for submission status
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,8 +43,16 @@ function JobDetails() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here (e.g., sending to server)
-    alert("You have successfully applied for the job!");
+    // Here you can make an actual API request to submit the data
+    // For now, we simulate success by setting the state
+    setApplicationSubmitted(true);
+
+    // Optionally, reset form data
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setResume(null);
+    setCoverLetter(null);
   };
 
   if (loading) {
@@ -102,82 +112,88 @@ function JobDetails() {
         </button>
       </div>
 
-      {/* Application Form */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h3 className="text-2xl font-semibold mb-4">Job Application</h3>
-        <form onSubmit={handleFormSubmit} className="space-y-4">
-          <div className="flex space-x-4">
-            <div className="flex-1">
+      {/* Conditional Rendering for Form or Success Message */}
+      {!applicationSubmitted ? (
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h3 className="text-2xl font-semibold mb-4">Job Application</h3>
+          <form onSubmit={handleFormSubmit} className="space-y-4">
+            <div className="flex space-x-4">
+              <div className="flex-1">
+                <label className="block text-lg font-medium mb-2">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  required
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-lg font-medium mb-2">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
               <label className="block text-lg font-medium mb-2">
-                First Name
+                Email Address
               </label>
               <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg"
                 required
               />
             </div>
-            <div className="flex-1">
+
+            <div>
               <label className="block text-lg font-medium mb-2">
-                Last Name
+                Upload Resume
               </label>
               <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                type="file"
+                onChange={(e) => setResume(e.target.files[0])}
                 className="w-full p-3 border border-gray-300 rounded-lg"
                 required
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-lg font-medium mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg"
-              required
-            />
-          </div>
+            <div>
+              <label className="block text-lg font-medium mb-2">
+                Upload Cover Letter
+              </label>
+              <input
+                type="file"
+                onChange={(e) => setCoverLetter(e.target.files[0])}
+                className="w-full p-3 border border-gray-300 rounded-lg"
+                required
+              />
+            </div>
 
-          <div>
-            <label className="block text-lg font-medium mb-2">
-              Upload Resume
-            </label>
-            <input
-              type="file"
-              onChange={(e) => setResume(e.target.files[0])}
-              className="w-full p-3 border border-gray-300 rounded-lg"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-lg font-medium mb-2">
-              Upload Cover Letter
-            </label>
-            <input
-              type="file"
-              onChange={(e) => setCoverLetter(e.target.files[0])}
-              className="w-full p-3 border border-gray-300 rounded-lg"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-          >
-            Submit Application
-          </button>
-        </form>
-      </div>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            >
+              Submit Application
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div className="text-center text-green-500 text-xl mt-6">
+          Application Sent! Thank you for applying.
+        </div>
+      )}
     </div>
   );
 }
