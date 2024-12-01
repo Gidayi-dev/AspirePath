@@ -14,6 +14,8 @@ import {
   getUserJobs,
   deleteJob,
   updateJob,
+  getUserApplications,
+  applyForJob,
 } from "./controllers/jobs.contollers.js";
 import {
   uploadResume,
@@ -51,6 +53,10 @@ app.delete("/jobs/:jobId", verifyToken, deleteJob);
 app.put("/jobs/:jobId", verifyToken, validateJob, updateJob);
 
 app.post("/upload-resume", uploadResume, handleResumeUpload); // Upload resume
+
+// Application routes
+app.post("/applications", verifyToken, applyForJob); // Apply for a job
+app.get("/applications/user", verifyToken, getUserApplications);
 
 // File Download Route
 app.get("/uploads/:filename", (req, res) => {

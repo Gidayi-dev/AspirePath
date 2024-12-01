@@ -35,6 +35,8 @@ function PostJob() {
         body: JSON.stringify(jobData),
       });
 
+      console.log("Response", response);
+
       if (response.ok) {
         const result = await response.json();
         alert(`Job posted successfully: ${result.title}`);
@@ -45,9 +47,11 @@ function PostJob() {
         setDescription("");
       } else {
         const errorData = await response.json();
+        console.error("Error Data:", errorData);
         setError(errorData.error || "Failed to post job.");
       }
     } catch (err) {
+      console.error("Fetch Data:", errorData);
       setError("An error occurred while posting the job.");
     } finally {
       setLoading(false);
