@@ -115,7 +115,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Register" element={<Register />} />
-            <Route path="/Findjobs" element={<FindJobs />} />
+            <Route path="/jobs" element={<FindJobs />} />
             <Route path="/About" element={<About />} />
             <Route path="/Messages" element={<Messages />} />
             <Route path="/Profile" element={<Profile />} />

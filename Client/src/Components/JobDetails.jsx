@@ -105,7 +105,7 @@ function JobDetails() {
         </div>
 
         <button
-          onClick={() => navigate("/Findjobs")}
+          onClick={() => navigate("/jobs")}
           className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mt-4 hover:bg-gray-400"
         >
           Back to Job Listings

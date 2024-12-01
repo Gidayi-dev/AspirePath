@@ -165,7 +165,7 @@ export const applyForJob = async (req, res) => {
     });
 
     const jobPoster = await prisma.user.findUnique({
-      where: { id: job.ownerId },
+      where: { id: ownerId, username: username, email: email },
     });
 
     if (jobPoster) {
@@ -184,8 +184,15 @@ export const applyForJob = async (req, res) => {
         text: `Hello ${jobPoster.name},\n\nYou have a new application for your job "${job.title}".`,
       };
 
+      // transporter.sendMail(mailOptions, (err, info) => {
+      //   if (err) console.error("Email error:", err);
+      // });
       transporter.sendMail(mailOptions, (err, info) => {
-        if (err) console.error("Email error:", err);
+        if (err) {
+          console.error("Email error:", err);
+        } else {
+          console.log("Email sent successfully:", info.response);
+        }
       });
     }
 

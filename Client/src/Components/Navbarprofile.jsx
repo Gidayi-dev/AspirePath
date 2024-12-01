@@ -11,7 +11,7 @@ function NavBarProfile() {
           Home
         </Link>
         <Link
-          to="/Findjobs"
+          to="/jobs"
           className="hover:text-purple-500 ease-in-out duration-300"
         >
           Find Jobs
