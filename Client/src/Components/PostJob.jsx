@@ -24,11 +24,10 @@ function PostJob() {
       type,
       description,
     };
-
     try {
       const response = await fetch("http://localhost:4000/jobs", {
         method: "POST",
-        credentials: "include",
+        credentials: "include", // Include credentials for cookies
         headers: {
           "Content-Type": "application/json",
         },
@@ -51,7 +50,7 @@ function PostJob() {
         setError(errorData.error || "Failed to post job.");
       }
     } catch (err) {
-      console.error("Fetch Data:", errorData);
+      console.error("Fetch Error:", err); // Correct error logging
       setError("An error occurred while posting the job.");
     } finally {
       setLoading(false);

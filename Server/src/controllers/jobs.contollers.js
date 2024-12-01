@@ -8,13 +8,13 @@ export async function createJob(req, res) {
     const { title, location, company, type, description } = req.body;
     const userId = req.userId; // Assumes `verifyToken` middleware sets this
 
-    // Ensure the user exists
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized access." });
+    }
 
+    const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found." });
     }
 
     const newJob = await prisma.job.create({
@@ -24,18 +24,14 @@ export async function createJob(req, res) {
         company,
         type,
         description,
-        owner: {
-          connect: {
-            id: userId, // Linking the user by userId
-          },
-        },
+        owner: { connect: { id: userId } }, // Correctly linking user to job
       },
     });
 
     res.status(201).json(newJob);
   } catch (e) {
     console.error("Error creating a job post:", e);
-    res.status(500).json({ message: e.message });
+    res.status(500).json({ message: "Failed to create job post." });
   }
 }
 
@@ -43,36 +39,32 @@ export async function fetchSingleJob(req, res) {
   try {
     const { id } = req.params;
 
-    const job = await prisma.job.findFirst({
+    const job = await prisma.job.findUnique({
       where: { id },
-      include: {
-        owner: true,
-      },
+      include: { owner: true }, // Includes owner details
     });
 
     if (!job) {
-      return res.status(404).json({ message: "Job not found" });
+      return res.status(404).json({ message: "Job not found." });
     }
 
     res.status(200).json(job);
   } catch (e) {
     console.error("Error fetching single job:", e);
-    res.status(500).json({ message: e.message });
+    res.status(500).json({ message: "Failed to fetch job details." });
   }
 }
 
 export async function fetchAllJobs(req, res) {
   try {
     const jobs = await prisma.job.findMany({
-      include: {
-        user: true,
-      },
+      include: { owner: true }, // Correct field to include owner details
     });
 
     res.status(200).json(jobs);
   } catch (e) {
     console.error("Error fetching all jobs:", e);
-    res.status(500).json({ message: e.message });
+    res.status(500).json({ message: "Failed to fetch jobs." });
   }
 }
 
@@ -80,18 +72,22 @@ export async function getUserJobs(req, res) {
   try {
     const userId = req.userId;
 
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
+
     const jobs = await prisma.job.findMany({
-      where: {
-        owner: userId,
-      },
+      where: { ownerId: userId }, // Correct condition
     });
+
+    if (jobs.length === 0) {
+      return res.status(404).json({ message: "No jobs found for this user." });
+    }
 
     res.status(200).json(jobs);
   } catch (e) {
     console.error("Error fetching user jobs:", e);
-    res
-      .status(500)
-      .json({ message: "Something went wrong. Please try again later." });
+    res.status(500).json({ message: "Failed to fetch user jobs." });
   }
 }
 
@@ -100,18 +96,21 @@ export async function deleteJob(req, res) {
     const { jobId } = req.params;
     const userId = req.userId;
 
-    await prisma.job.delete({
-      where: {
-        AND: [{ id: jobId }, { owner: userId }],
-      },
+    const job = await prisma.job.findUnique({
+      where: { id: jobId },
     });
 
+    if (!job || job.ownerId !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this job." });
+    }
+
+    await prisma.job.delete({ where: { id: jobId } });
     res.status(200).json({ message: "Job deleted successfully." });
   } catch (e) {
     console.error("Error deleting job:", e);
-    res
-      .status(500)
-      .json({ message: "Something went wrong. Please try again later." });
+    res.status(500).json({ message: "Failed to delete job." });
   }
 }
 
@@ -121,114 +120,94 @@ export async function updateJob(req, res) {
     const { title, location, company, type, description } = req.body;
     const userId = req.userId;
 
-    const job = await prisma.job.update({
-      where: { id: jobId, owner: userId },
+    const job = await prisma.job.findUnique({
+      where: { id: jobId },
+    });
+
+    if (!job || job.ownerId !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to update this job." });
+    }
+
+    const updatedJob = await prisma.job.update({
+      where: { id: jobId },
       data: { title, location, company, type, description },
     });
 
-    res.status(200).json(job);
+    res.status(200).json(updatedJob);
   } catch (e) {
     console.error("Error updating job:", e);
-    res
-      .status(500)
-      .json({ message: "Something went wrong. Please try again later." });
+    res.status(500).json({ message: "Failed to update job." });
   }
 }
 
 export const applyForJob = async (req, res) => {
   try {
     const { jobId } = req.body;
-    const userId = req.userId; // Assumes `verifyToken` middleware sets this
+    const userId = req.userId;
 
-    // Check if job exists
-    const job = await prisma.job.findUnique({
-      where: { id: jobId },
-    });
-
+    const job = await prisma.job.findUnique({ where: { id: jobId } });
     if (!job) {
-      return res.status(404).json({ message: "Job not found" });
+      return res.status(404).json({ message: "Job not found." });
     }
 
-    // Check if the user has already applied
     const existingApplication = await prisma.application.findFirst({
       where: { jobId, userId },
     });
 
     if (existingApplication) {
-      return res
-        .status(409)
-        .json({ message: "You have already applied for this job." });
+      return res.status(409).json({ message: "Already applied to this job." });
     }
 
-    // Create a new application
     const application = await prisma.application.create({
-      data: {
-        jobId,
-        userId,
-      },
+      data: { jobId, userId },
     });
 
-    // Send an email to the job poster
     const jobPoster = await prisma.user.findUnique({
-      where: { id: job.ownerId }, // Assumes `ownerId` points to the employer
+      where: { id: job.ownerId },
     });
 
     if (jobPoster) {
-      // Create a Nodemailer transporter
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "your-email@gmail.com", // Replace with your email
-          pass: "your-email-password", // Replace with your email password or use App Password
+          user: process.env.EMAIL, // Use environment variables
+          pass: process.env.EMAIL_PASSWORD,
         },
       });
 
-      // Email content
       const mailOptions = {
-        from: "your-email@gmail.com", // Replace with your email
-        to: jobPoster.email, // Job poster's email
+        from: process.env.EMAIL,
+        to: jobPoster.email,
         subject: "New Job Application",
-        text:
-          `Hello ${jobPoster.name},\n\nYou have received a new application for your job posting "${job.title}" from ${req.user.name}.` +
-          `\n\nApplicant Details:\nName: ${req.user.name}\nEmail: ${req.user.email}\n\nBest regards,\nJob Application System`,
+        text: `Hello ${jobPoster.name},\n\nYou have a new application for your job "${job.title}".`,
       };
 
-      // Send email
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error("Error sending email:", error);
-        } else {
-          console.log("Email sent:", info.response);
-        }
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) console.error("Email error:", err);
       });
     }
 
     res.status(201).json(application);
   } catch (error) {
     console.error("Error applying for job:", error);
-    res
-      .status(500)
-      .json({ message: "An error occurred while applying for the job." });
+    res.status(500).json({ message: "Failed to apply for job." });
   }
 };
 
-// Fetch applications for a user
 export const getUserApplications = async (req, res) => {
   try {
     const userId = req.userId;
 
     const applications = await prisma.application.findMany({
       where: { userId },
-      include: {
-        job: true, // Include job details
-      },
+      include: { job: true },
     });
 
     res.status(200).json(applications);
   } catch (error) {
-    console.error("Error fetching user applications:", error);
-    res
-      .status(500)
-      .json({ message: "An error occurred while fetching applications." });
+    console.error("Error fetching applications:", error);
+    res.status(500).json({ message: "Failed to fetch applications." });
   }
 };

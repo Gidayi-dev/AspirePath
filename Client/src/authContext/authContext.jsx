@@ -1,18 +1,27 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
+// Create the AuthContext
 const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [auth, setAuth] = useState({
-    userId: null,
-    isAuthenticated: false,
-  });
+export const AuthProvider = ({ children }) => {
+  const [auth, setAuth] = useState(false);
+
+  useEffect(() => {
+    const authData = localStorage.getItem("authData");
+    if (authData) {
+      const parsedData = JSON.parse(authData);
+      setAuth(parsedData.isAuthenticated);
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export const useAuth = () => useContext(AuthContext);
+// Custom hook to use auth context
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

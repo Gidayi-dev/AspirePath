@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function JobDetails() {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,16 +17,21 @@ function JobDetails() {
   useEffect(() => {
     const fetchJobDetails = async () => {
       setLoading(true);
+      setError(null);
 
       try {
-        // Replace the mock data with a real API call
-        const response = await fetch(`/jobs/${jobId}`);
-        const data = await response.json();
+        const response = await axios.get(
+          `http://localhost:4000/jobs/${jobId}`,
+          {
+            withCredentials: true,
+          },
+        );
 
-        setJob(data);
-        setLoading(false);
+        setJob(response.data);
       } catch (error) {
         console.error("Error fetching job details:", error);
+        setError("Failed to load job details. Please try again later.");
+      } finally {
         setLoading(false);
       }
     };
@@ -46,6 +53,14 @@ function JobDetails() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-xl text-red-500">{error}</div>
+      </div>
+    );
+  }
+
   if (!job) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -55,7 +70,7 @@ function JobDetails() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-4 max-w-xl">
       <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-3xl font-bold">{job.title}</h2>
         <h3 className="text-xl text-gray-600 mb-4">{job.company}</h3>
@@ -65,10 +80,12 @@ function JobDetails() {
           <p>{job.description}</p>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-2">
           <h4 className="text-2xl font-semibold mb-2">Requirements:</h4>
           <ul className="list-disc pl-6">
-            <li>{job.requirements}</li>
+            {job?.requirements?.map((req, index) => (
+              <li key={index}>{req}</li>
+            ))}
           </ul>
         </div>
 
@@ -76,13 +93,6 @@ function JobDetails() {
           <h4 className="text-2xl font-semibold mb-2">Salary:</h4>
           <p>{job.salary}</p>
         </div>
-
-        <button
-          onClick={() => alert("You have applied for the job!")}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-        >
-          Apply Now
-        </button>
 
         <button
           onClick={() => navigate("/Findjobs")}

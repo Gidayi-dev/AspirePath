@@ -3,6 +3,7 @@
 import Filter from "../FilterSidebar";
 import JobList from "../JobList";
 import NavBar from "../Navbar";
+import SearchBar from "../SearchBar";
 
 function Home() {
   return (

@@ -1,58 +1,67 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const MyJobs = () => {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
+const UserJobs = () => {
+  const [myJobs, setMyJobs] = useState([]);
+  const [isJobLoading, setIsJobLoading] = useState(true);
+  const [jobError, setJobError] = useState("");
+
+  const fetchMyJobs = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/jobs/user", {
+        withCredentials: true, // Ensure that cookies are sent with the request
+      });
+
+      if (response.data) {
+        setMyJobs(response.data);
+      } else {
+        setJobError("No jobs found.");
+      }
+    } catch (e) {
+      setJobError("Failed to fetch jobs.");
+    } finally {
+      setIsJobLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const response = await fetch("/api/user/jobs"); // Your backend API endpoint
-        if (!response.ok) {
-          throw new Error("Failed to fetch jobs");
-        }
-        const data = await response.json();
-        setJobs(data);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchJobs();
+    fetchMyJobs();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-
   return (
-    <div>
-      <h1>My Posted Jobs</h1>
-      {jobs.length > 0 ? (
-        <ul>
-          {jobs.map((job) => (
-            <li key={job.id}>
-              <h2>{job.title}</h2>
-              <p>
-                <strong>Location:</strong> {job.location}
-              </p>
-              <p>
-                <strong>Company:</strong> {job.company}
-              </p>
-              <p>
-                <strong>Job Type:</strong> {job.jobType}
-              </p>
-              <p>
-                <strong>Description:</strong> {job.description}
-              </p>
-            </li>
-          ))}
-        </ul>
+    <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold text-gray-900">Your Jobs</h1>
+
+      {isJobLoading ? (
+        <div className="text-center py-4">Loading...</div>
+      ) : jobError ? (
+        <div className="text-red-500 text-center py-4">{jobError}</div>
       ) : (
-        <p>You haven't posted any jobs yet.</p>
+        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {myJobs.map((jobs) => (
+            <div
+              key={jobs.id}
+              className="bg-white border border-gray-200 rounded-lg shadow-md p-4"
+            >
+              <h2 className="text-xl font-semibold text-gray-900">
+                {jobs.title}
+              </h2>
+              <p className="text-gray-700">{jobs.company}</p>
+              <p className="text-gray-500 text-sm">{jobs.location}</p>
+              <div className="mt-4">
+                <a
+                  href={`/JobDetails/${jobs.id}`}
+                  className="text-indigo-600 hover:text-indigo-900 text-sm"
+                >
+                  View Job Details
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
 };
 
-export default MyJobs;
+export default UserJobs;
