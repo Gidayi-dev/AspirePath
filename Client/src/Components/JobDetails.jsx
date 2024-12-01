@@ -1,5 +1,3 @@
-// Displays the detailed view of a single job when clicked on from the job list.
-// Shows job description, requirements, salary, application button, etc.
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -7,31 +5,37 @@ function JobDetails() {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [resume, setResume] = useState(null);
+  const [coverLetter, setCoverLetter] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobDetails = async () => {
       setLoading(true);
 
-      const jobData = {
-        id: jobId,
-        title: "Software Engineer",
-        company: "Tech Corp",
-        description:
-          "We are looking for a highly skilled Software Engineer to join our team. You will be responsible for building and maintaining web applications.",
-        requirements:
-          "3+ years of experience in web development, proficient in React, JavaScript, HTML, CSS.",
-        salary: "$90,000 - $120,000 per year",
-      };
-      setJob(jobData);
-      setLoading(false);
+      try {
+        // Replace the mock data with a real API call
+        const response = await fetch(`/jobs/${jobId}`);
+        const data = await response.json();
+
+        setJob(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+        setLoading(false);
+      }
     };
 
     fetchJobDetails();
   }, [jobId]);
 
-  const handleApply = () => {
-    alert("You have applied for the job!");
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission logic here (e.g., sending to server)
+    alert("You have successfully applied for the job!");
   };
 
   if (loading) {
@@ -52,7 +56,7 @@ function JobDetails() {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="bg-white shadow-lg rounded-lg p-6">
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
         <h2 className="text-3xl font-bold">{job.title}</h2>
         <h3 className="text-xl text-gray-600 mb-4">{job.company}</h3>
 
@@ -74,18 +78,95 @@ function JobDetails() {
         </div>
 
         <button
-          onClick={handleApply}
+          onClick={() => alert("You have applied for the job!")}
           className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
         >
           Apply Now
         </button>
 
         <button
-          onClick={() => navigate("/findjobs")}
+          onClick={() => navigate("/Findjobs")}
           className="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mt-4 hover:bg-gray-400"
         >
           Back to Job Listings
         </button>
+      </div>
+
+      {/* Application Form */}
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h3 className="text-2xl font-semibold mb-4">Job Application</h3>
+        <form onSubmit={handleFormSubmit} className="space-y-4">
+          <div className="flex space-x-4">
+            <div className="flex-1">
+              <label className="block text-lg font-medium mb-2">
+                First Name
+              </label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg"
+                required
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-lg font-medium mb-2">
+                Last Name
+              </label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-lg font-medium mb-2">
+              Email Address
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-lg font-medium mb-2">
+              Upload Resume
+            </label>
+            <input
+              type="file"
+              onChange={(e) => setResume(e.target.files[0])}
+              className="w-full p-3 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-lg font-medium mb-2">
+              Upload Cover Letter
+            </label>
+            <input
+              type="file"
+              onChange={(e) => setCoverLetter(e.target.files[0])}
+              className="w-full p-3 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+          >
+            Submit Application
+          </button>
+        </form>
       </div>
     </div>
   );

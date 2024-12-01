@@ -96,6 +96,7 @@ import JobSeekerProfile from "./Components/Pages/Profiles/Jobseeker";
 import Profile from "./Components/Profile";
 import NavBarProfile from "./Components/Navbarprofile";
 import NavBar from "./Components/Navbar"; // Make sure NavBar is imported
+import JobDetails from "./Components/JobDetails";
 
 const client = new QueryClient();
 
@@ -119,6 +120,7 @@ function App() {
             <Route path="/Messages" element={<Messages />} />
             <Route path="/Profile" element={<Profile />} />
             <Route path="/Postjob" element={<PostJob />} />
+            <Route path="/JobDetails/:jobId" element={<JobDetails />} />
           </Routes>
         </Router>
       </AuthProvider>

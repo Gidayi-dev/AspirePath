@@ -1,8 +1,7 @@
-// The main page where users can browse and search for job listings.
-// Uses JobList.js, SearchBar.js, and FilterSidebar.js components.
-// Includes functionality to apply for jobs directly from this page.
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NavBar from "../Navbar";
+import SearchBar from "../SearchBar";
 
 const sampleJobs = [
   {
@@ -23,38 +22,26 @@ const sampleJobs = [
   },
   {
     id: 3,
-    title: "Frontend Engineer",
-    location: "San Francisco",
-    company: "Sportserve",
-    type: "Hybrid",
-    description: "Build modern, responsive web applications.",
-  },
-  {
-    id: 4,
-    title: "DevOps Engineer",
+    title: "Frontend Developer",
     location: "Remote",
-    company: "Sportserve",
+    company: "Tech Corp",
     type: "Remote",
-    description: "Manage infrastructure and deployment pipelines.",
+    description: "Build responsive and user-friendly websites.",
   },
-  {
-    id: 5,
-    title: "Product Manager",
-    location: "Chicago",
-    company: "Sportserve",
-    type: "On-site",
-    description: "Lead product development teams and strategies.",
-  },
+  // Add more jobs as needed...
 ];
 
 function FindJobs() {
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("");
   const [type, setType] = useState("");
-  const [jobs, setJobs] = useState(sampleJobs);
+  const [jobs] = useState(sampleJobs);
   const [page, setPage] = useState(1);
   const [jobsPerPage] = useState(3);
 
+  const navigate = useNavigate();
+
+  // Filter jobs based on the search and filter conditions
   const filteredJobs = jobs.filter((job) => {
     const matchesKeyword = job.title
       .toLowerCase()
@@ -73,65 +60,27 @@ function FindJobs() {
 
   const paginate = (pageNumber) => setPage(pageNumber);
 
+  const handleApplyNow = (id) => {
+    navigate(`/jobs/${id}`);
+  };
+
   return (
     <div>
       <NavBar />
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-10">
         <h2 className="text-4xl font-bold text-gray-800 mb-6">Find Jobs</h2>
 
-        <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-3xl mb-10">
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Search by Job Title
-            </label>
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="e.g., Software Developer"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
+        {/* Filters Section */}
+        <div className="flex w-full justify-between mb-10">
+          <SearchBar
+            location={location}
+            setLocation={setLocation}
+            type={type}
+            setType={setType}
+          />
+          <div className="w-full max-w-3xl">
+            <SearchBar keyword={keyword} setKeyword={setKeyword} />
           </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">
-              Location
-            </label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="e.g., Remote, New York"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-2">
-              Job Type
-            </label>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            >
-              <option value="">All Types</option>
-              <option value="Remote">Remote</option>
-              <option value="Hybrid">Hybrid</option>
-              <option value="On-site">On-site</option>
-            </select>
-          </div>
-
-          <button
-            onClick={() => {
-              setKeyword("");
-              setLocation("");
-              setType("");
-            }}
-            className="bg-gray-700 text-white px-6 py-2 rounded hover:bg-gray-800"
-          >
-            Reset Filters
-          </button>
         </div>
 
         {/* Job Listings */}
@@ -146,7 +95,10 @@ function FindJobs() {
                 <p className="text-gray-700">Location: {job.location}</p>
                 <p className="text-gray-700">Job Type: {job.type}</p>
                 <p className="text-gray-700 mb-4">{job.description}</p>
-                <button className="bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-700">
+                <button
+                  onClick={() => handleApplyNow(job.id)}
+                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+                >
                   Apply Now
                 </button>
               </div>
@@ -160,25 +112,20 @@ function FindJobs() {
 
         {/* Pagination */}
         <div className="mt-6 flex justify-center">
-          {filteredJobs.length > jobsPerPage && (
-            <div className="flex items-center space-x-4">
-              {[...Array(Math.ceil(filteredJobs.length / jobsPerPage))].map(
-                (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => paginate(index + 1)}
-                    className={`px-4 py-2 rounded ${
-                      page === index + 1
-                        ? "bg-gray-700 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    } hover:bg-gray-300`}
-                  >
-                    {index + 1}
-                  </button>
-                ),
-              )}
-            </div>
-          )}
+          <button
+            onClick={() => paginate(page - 1)}
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded mr-2"
+            disabled={page === 1}
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => paginate(page + 1)}
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded"
+            disabled={page * jobsPerPage >= filteredJobs.length}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
