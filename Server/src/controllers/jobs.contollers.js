@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import nodemailer from "nodemailer";
 
 const prisma = new PrismaClient();
 
@@ -166,6 +167,41 @@ export const applyForJob = async (req, res) => {
         userId,
       },
     });
+
+    // Send an email to the job poster
+    const jobPoster = await prisma.user.findUnique({
+      where: { id: job.ownerId }, // Assumes `ownerId` points to the employer
+    });
+
+    if (jobPoster) {
+      // Create a Nodemailer transporter
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "your-email@gmail.com", // Replace with your email
+          pass: "your-email-password", // Replace with your email password or use App Password
+        },
+      });
+
+      // Email content
+      const mailOptions = {
+        from: "your-email@gmail.com", // Replace with your email
+        to: jobPoster.email, // Job poster's email
+        subject: "New Job Application",
+        text:
+          `Hello ${jobPoster.name},\n\nYou have received a new application for your job posting "${job.title}" from ${req.user.name}.` +
+          `\n\nApplicant Details:\nName: ${req.user.name}\nEmail: ${req.user.email}\n\nBest regards,\nJob Application System`,
+      };
+
+      // Send email
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+        } else {
+          console.log("Email sent:", info.response);
+        }
+      });
+    }
 
     res.status(201).json(application);
   } catch (error) {
