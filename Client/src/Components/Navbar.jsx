@@ -24,12 +24,6 @@ function NavBar() {
         >
           About
         </Link>
-        <Link
-          to="/Postjob"
-          className="hover:text-purple-500 ease-in-out duration-300"
-        >
-          Post Job
-        </Link>
       </div>
 
       <div className="flex gap-10 text-xl mr-5">

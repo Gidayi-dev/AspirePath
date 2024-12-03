@@ -9,9 +9,11 @@ function Home() {
   return (
     <div>
       <NavBar />
-      <SearchBar />
+      <SearchBar/>
       <Filter />
       <JobList />
+
+      
     </div>
   );
 }

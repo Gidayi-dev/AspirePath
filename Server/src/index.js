@@ -4,8 +4,8 @@ import cookieParser from "cookie-parser";
 import path from "path"; // Import the path module
 import {
   registerUser,
-  getUserProfile,
 } from "./controllers/users.controllers.js";
+import { getUserProfile } from "./controllers/users.controllers.js";
 import { LogInUser } from "./controllers/auth.controllers.js";
 import {
   createJob,
@@ -51,6 +51,8 @@ app.get("/jobs/:id", verifyToken, fetchSingleJob);
 app.get("/jobs", verifyToken, fetchAllJobs);
 app.delete("/jobs/:jobId", verifyToken, deleteJob);
 app.put("/jobs/:jobId", verifyToken, validateJob, updateJob);
+
+app.get("/users/:id", getUserProfile);
 
 app.post("/upload-resume", uploadResume, handleResumeUpload); // Upload resume
 
